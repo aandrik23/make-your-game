@@ -18,18 +18,22 @@ let bombermanRightImage;
 let wallImage;
 let brickImage;
 let keyImage;
+let portImage;
+let cherry;
+let banana;
+let apple;
 
 
 //X = wall, B = brick O = skip, P = pac man, ' ' = food
 // Ghosts: b= blue, o = enemy1, p = enemy2, r = enemy3
-// Foods:  C = cherry, A = apple , B = banana
+// Foods:  C = cherry, A = apple , M = banana
 // Objectives : K = key , p = port
 
 const tileMap = [
     "XXXXXXXXXXXXXXXXXXX",
-    "X b B    X        X",
+    "Xkb B    X       AX",
     "X XX XXX X XXX XX X",
-    "X   B             X",
+    "XM  B             X",
     "X XX X XXXXX X XX X",
     "X    X       X    X",
     "XXXXBXXXX XXXX XXXX",
@@ -45,14 +49,19 @@ const tileMap = [
     "XX X X XXXXX X X XX",
     "X    X   X   X    X",
     "X XXXXXX X XXXXXX X",
-    "X                 X",
+    "XC               EX",
     "XXXXXXXXXXXXXXXXXXX"
 ];
 
+
+const powers = new Set();
+const objectives = new Set();
 const walls = new Set();
 const foods = new Set();
 const ghosts = new Set();
 let bomber;
+let port;
+
 
 const directions = ['U', 'D', 'L', 'R']; //up down left right
 let score = 0;
@@ -76,13 +85,19 @@ window.onload = function () {
 }
 
 function loadImages() {
+    //layout
     wallImage = new Image();
     wallImage.src = "./rock.png";
     brickImage = new Image();
     brickImage.src = "./bricks.png";
+
+    //objective
     keyImage = new Image();
     keyImage.src = "./key.png";
+    portImage = new Image (); 
+    portImage.src = "./port.png"
 
+    //enemies
     blueGhostImage = new Image();
     blueGhostImage.src = "./blueGhost.png";
     enemy1Image = new Image();
@@ -92,6 +107,7 @@ function loadImages() {
     enemy3Image = new Image();
     enemy3Image.src = "./enemy3.png";
 
+    //bomber
     bombermanUpImage = new Image();
     bombermanUpImage.src = "./BombermanUp.png";
     bombermanDownImage = new Image();
@@ -100,6 +116,14 @@ function loadImages() {
     bombermanLeftImage.src = "./BombermanLeft.png"; // fixed variable name
     bombermanRightImage = new Image();
     bombermanRightImage.src = "./BombermanRight.png";
+
+    //power'up
+    cherryImage = new Image();
+    cherryImage.src = "./cherry.png";
+    appleImage = new Image ();
+    appleImage.src = "./apple.png"
+    bananaImage = new Image();
+    bananaImage.src = "./banana.png"
 }
 
 function loadMap() {
@@ -142,6 +166,26 @@ function loadMap() {
             else if (tileMapChar == 'P') { //bomber
                 bomber = new Block(bombermanRightImage, x, y, tileSize, tileSize);
             }
+            else if (tileMapChar == 'k') { //key
+                const obj = new Block(keyImage,x,y,tileSize,tileSize);
+                objectives.add(obj);
+            }
+            else if (tileMapChar=='E'){
+                port = new Block(portImage,x,y,tileSize,tileSize)
+            }
+            else if (tileMapChar == 'C') { //key
+                const power = new Block(cherryImage,x,y,tileSize,tileSize);
+                powers.add(power);
+            }
+            else if (tileMapChar == 'M') { //key
+                const power = new Block(bananaImage,x,y,tileSize,tileSize);
+                powers.add(power);
+            }
+                    else if (tileMapChar == 'A') { //key
+                const power = new Block(appleImage,x,y,tileSize,tileSize);
+                powers.add(power);
+            }
+
             else if (tileMapChar == ' ') { //empty is food
                 const food = new Block(keyImage, x + 14, y + 14, 4, 4);
                 foods.add(food);
@@ -162,6 +206,11 @@ function update() {
 function draw() {
     context.clearRect(0, 0, board.width, board.height);
     context.drawImage(bomber.image, bomber.x, bomber.y, bomber.width, bomber.height);
+
+    context.globalAlpha = 0.4; // 50% opacity
+    context.drawImage(port.image, port.x, port.y, port.width, port.height);
+    context.globalAlpha = 1.0; // reset so other things are normal
+
     for (let ghost of ghosts.values()) {
         context.drawImage(ghost.image, ghost.x, ghost.y, ghost.width, ghost.height);
     }
@@ -169,6 +218,16 @@ function draw() {
     for (let wall of walls.values()) {
         context.drawImage(wall.image, wall.x, wall.y, wall.width, wall.height);
     }
+    
+    for (let obj of objectives.values()) {
+        context.drawImage(obj.image, obj.x, obj.y, obj.width, obj.height);
+    }
+
+    
+    for (let power of powers.values()) {
+        context.drawImage(power.image,power.x,power.y,power.width,power.height);
+    }
+
 
     context.fillStyle = "white";
     for (let food of foods.values()) {
