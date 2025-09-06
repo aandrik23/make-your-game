@@ -19,9 +19,9 @@ let wallImage;
 let brickImage;
 let keyImage;
 let portImage;
-let cherry;
-let banana;
-let apple;
+let cherryImage;
+let bananaImage;
+let appleImage;
 
 
 //X = wall, B = brick O = skip, P = pac man, ' ' = food
@@ -53,7 +53,7 @@ const tileMap = [
     "XXXXXXXXXXXXXXXXXXX"
 ];
 
-
+const bombs = new Set();
 const powers = new Set();
 const objectives = new Set();
 const walls = new Set();
@@ -61,6 +61,7 @@ const foods = new Set();
 const ghosts = new Set();
 let bomber;
 let port;
+
 
 
 const directions = ['U', 'D', 'L', 'R']; //up down left right
@@ -124,6 +125,12 @@ function loadImages() {
     appleImage.src = "./apple.png"
     bananaImage = new Image();
     bananaImage.src = "./banana.png"
+
+    // bomb
+    bombImage = new Image()
+    bombImage.src = "./bomb.png"
+    explosionImage = new Image()
+    explosionImage.src = "./explosion.png"
 }
 
 function loadMap() {
@@ -198,6 +205,13 @@ function update() {
     if (gameOver) {
         return;
     }
+    for (let bomb of bombs) {
+        bomb.update();
+        if (bomb.isDone()) {
+        bombs.delete(bomb); // remove after explosion effect ends
+    }
+    }
+
     move();
     draw();
     setTimeout(update, 50); //1000/50 = 20 FPS
@@ -227,7 +241,12 @@ function draw() {
     for (let power of powers.values()) {
         context.drawImage(power.image,power.x,power.y,power.width,power.height);
     }
+    
+    for (let bomb of bombs) {
+    bomb.draw(context);
+}
 
+    
 
     context.fillStyle = "white";
     for (let food of foods.values()) {
@@ -271,6 +290,23 @@ function move() {
         if (ghost.y == tileSize * 9 && ghost.direction != 'U' && ghost.direction != 'D') {
             ghost.updateDirection('U');
         }
+
+        let newDirection;
+        for (let bomb of bombs.values()){
+            if (collision(ghost, bomb)){
+                if (ghost.direction == "U") {
+                    newDirection = "D"
+                }                if (ghost.direction == "D") {
+                    newDirection = "U"
+                }                if (ghost.direction == "L") {
+                    newDirection = "R"
+                }                if (ghost.direction == "R") {
+                    newDirection = "L"
+                }
+                ghost.updateDirection(newDirection);
+            }
+        }
+        
 
         ghost.x += ghost.velocityX;
         ghost.y += ghost.velocityY;
@@ -331,7 +367,11 @@ function movebomber(e) {
     else if (e.code == "ArrowRight" || e.code == "KeyD") {
         newX += tileSize;
         bomber.image = bombermanRightImage;
+    } else if (e.code == "KeyB") {
+        const newBomb = new Bomb(bombImage, bomber.x, bomber.y, tileSize, tileSize);
+        bombs.add(newBomb);
     }
+
 
     // check if the new position collides with a wall
     const tempBomber = new Block(null, newX, newY, bomber.width, bomber.height);
@@ -383,6 +423,73 @@ function resetPositions() {
         ghost.updateDirection(newDirection);
     }
 }
+
+class Bomb {
+    constructor(image,x,y,width,height){
+        this.image = image;
+        this.x = x 
+        this.y = y
+        this.width = width
+        this.height = height
+        this.timer = 2000
+        this.placedAt = Date.now()
+        this.exploded = false
+
+        this.explosionDuration = 1000; // 1s fire animation
+        this.explodedAt = null;
+    }
+
+    update() {
+        if (!this.exploded && Date.now() - this.placedAt >= this.timer) {
+            this.explode();
+        }
+    }
+
+    draw(context) {
+        if (!this.exploded) {
+            // draw bomb
+            context.drawImage(this.image, this.x, this.y, this.width, this.height);
+        } else {
+            this.drawExplosion(context);
+        }
+    }
+
+    explode() {
+        this.exploded = true;
+        this.explodedAt = Date.now();
+        console.log("💥 Bomb exploded at", this.x, this.y);
+        // TODO: add logic to break bricks, damage ghosts, etc.
+    }
+
+drawExplosion(context) {
+    // center
+    context.drawImage(explosionImage, this.x, this.y, this.width, this.height);
+
+    // left
+    context.drawImage(explosionImage, this.x - this.width, this.y, this.width, this.height);
+
+    // right
+    context.drawImage(explosionImage, this.x + this.width, this.y, this.width, this.height);
+
+    // up
+    context.drawImage(explosionImage, this.x, this.y - this.height, this.width, this.height);
+
+    // down
+    context.drawImage(explosionImage, this.x, this.y + this.height, this.width, this.height);
+}
+
+
+    isDone() {
+        // bomb can be removed after explosion duration
+        return this.exploded && (Date.now() - this.explodedAt >= this.explosionDuration);
+    }
+    
+
+
+}
+
+
+
 
 class Block {
     constructor(image, x, y, width, height) {
