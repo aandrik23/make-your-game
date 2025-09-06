@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Bomberman (Pure DOM)</title>
+  <link rel="stylesheet" href="dom-bomberman.css"/>
+</head>
+<body>
+  <div id="hud">
+    <div>Lives: <span id="lives">3</span></div>
+    <div>Bombs: <span id="bombs">∞</span></div>
+    <div>Keys: <span id="keys">0</span></div>
+    <button id="resetBtn" type="button">Reset</button>
+  </div>
+
+  <div id="game" aria-label="Bomberman grid game" role="application" tabindex="0"></div>
+
+  <template id="tile-template">
+    <div class="tile" data-type="floor" aria-hidden="true"></div>
+  </template>
+
+  <script src="dom-bomberman.js"></script>
+</body>
+</html>
