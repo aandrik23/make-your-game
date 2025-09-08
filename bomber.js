@@ -92,6 +92,15 @@ function gameLoop(time) {
     }
   }
 });
+  entities.forEach((e, index) => {
+    if (e instanceof PowerUp) {
+      if (collision(player.bounds, e.bounds)) {
+        console.log("player ate powerup");
+        playerEat(e, index);
+      }
+    }
+  });
+
 
 
   requestAnimationFrame(gameLoop);
@@ -101,11 +110,12 @@ requestAnimationFrame(gameLoop);
 
 
 function collision(a, b) {
-    return a.x < b.x + b.width &&   //a's top left corner doesn't reach b's top right corner
-        a.x + a.width > b.x &&   //a's top right corner passes b's top left corner
-        a.y < b.y + b.height &&  //a's top left corner doesn't reach b's bottom left corner
-        a.y + a.height > b.y;    //a's bottom left corner passes b's top left corner
+    return a.x < b.x + b.width -1 &&   //a's top left corner doesn't reach b's top right corner
+        a.x + a.width - 1 > b.x &&   //a's top right corner passes b's top left corner
+        a.y < b.y + b.height - 1 &&  //a's top left corner doesn't reach b's bottom left corner
+        a.y + a.height - 1 > b.y;    //a's bottom left corner passes b's top left corner
 }
+
 function playerHit() {
   lives--;
   if (lives <= 0) {
@@ -124,3 +134,13 @@ function playerHit() {
   player.updatePosition();
 }
  
+function playerEat(powerUp, index) {
+  // Optional: increment score
+  // scores++;
+
+  // Remove the element from DOM
+  powerUp.el.remove();
+
+  // Remove it from the game entities
+  entities.splice(index, 1);
+}
