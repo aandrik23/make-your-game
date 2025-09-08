@@ -1,0 +1,42 @@
+body {
+  display: flex;
+  justify-content: center; /* horizontal center */
+  align-items: center;     /* vertical center */
+  height: 100vh;           /* full viewport height */
+  margin: 0;               /* remove default body margin */
+  background: #494242;        /* optional: dark background */
+}
+
+#game {
+  display: grid;
+  position: relative;
+  --cols: 19;
+  --rows: 21;
+  grid-template-columns: repeat(var(--cols), 32px);
+  grid-template-rows: repeat(var(--rows), 32px);
+}
+
+.tile {
+  width: 32px;
+  height: 32px;
+  background-size: cover;
+}
+
+.wall    { background-image: url("images/rock.png"); }
+.brick   { background-image: url("images/bricks.png"); }
+.floor   { background-color: rgb(59, 63, 66); }
+
+
+.bomber  { background-image: url("images/BombermanRight.png"); }
+
+.ghost-blue   { background-image: url("images/blueGhost.png"); }
+.ghost-red    { background-image: url("images/enemy1.png"); }
+.ghost-pink   { background-image: url("images/enemy2.png"); }
+.ghost-orange { background-image: url("images/enemy3.png"); }
+
+.cherry  { background-image: url("images/cherry.png"); }
+.apple   { background-image: url("images/apple.png"); }
+.banana  { background-image: url("images/banana.png"); }
+
+.key     { background-image: url("images/key.png"); }
+.port    { background-image: url("images/port.png"); }
