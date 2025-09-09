@@ -40,3 +40,5 @@ body {
 
 .key     { background-image: url("images/key.png"); }
 .port    { background-image: url("images/port.png"); }
+
+.bomb  { background-image: url("images/bomb.png");}

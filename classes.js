@@ -1,3 +1,6 @@
+import { entities } from './bomber.js';
+
+
 export class Tile {
   constructor(x, y, cssClass) {
     const tile = document.createElement("div");
@@ -14,7 +17,7 @@ export class Entity {
     this.x = x;
     this.y = y;
     this.posX = x * 32;
-    this.posY = y * 32;
+    this.posY = y * 32; 
     this.speed = 100;
 
     this.targetX = x;
@@ -77,15 +80,38 @@ export class Player extends Entity {
     super(x, y, "bomber");
     this.tileMap = tileMap;
     this.nextDir = { dx: 0, dy: 0 };
+    this.bombs = [];
 
     window.addEventListener("keydown", (e) => {
-      switch (e.key) {
-        case "ArrowUp": this.nextDir = { dx: 0, dy: -1 }; break;
-        case "ArrowDown": this.nextDir = { dx: 0, dy: 1 }; break;
-        case "ArrowLeft": this.nextDir = { dx: -1, dy: 0 }; break;
-        case "ArrowRight": this.nextDir = { dx: 1, dy: 0 }; break;
-      }
-    });
+  if (["b","B","ArrowUp","ArrowDown","ArrowLeft","ArrowRight","w","a","s","d"].includes(e.key)) {
+    e.preventDefault(); // stop the browser from handling it
+  }
+
+  switch (e.key) {
+    case "ArrowUp":
+    case "w":
+      this.nextDir = { dx: 0, dy: -1 }; break;
+    case "ArrowDown":
+    case "s":
+      this.nextDir = { dx: 0, dy: 1 }; break;
+    case "ArrowLeft":
+    case "a":
+      this.nextDir = { dx: -1, dy: 0 }; break;
+    case "ArrowRight":
+    case "d":
+      this.nextDir = { dx: 1, dy: 0 }; break;
+    case "B":
+    case "b":
+      this.dropBomb(); break;
+  }
+});
+
+  }
+
+  dropBomb() {
+    const bomb = new Bomb(this.x, this.y);
+    entities.push(bomb);
+    this.bombs.push(bomb);
   }
 
   chooseDirection() {
@@ -149,8 +175,31 @@ export class PowerUp extends Entity {
   constructor(x, y, type) {
     super(x, y, type); // type is the CSS class: "speed", "bomb", "shield"...
     this.collected = false;
+    this.radius = 1
   }
 
+}
 
 
+export class Bomb extends Entity {
+  constructor(x,y) {
+    super(x,y,"bomb")
+    this.fuse = 3000
+    this.time = 0
+  }
+  update(delta) {
+    this.time +=delta
+    if (this.time >= this.fuse) {
+      this.explode()
+    }
+  }
+
+  explode(){
+    console.log("💥 Bomb exploded!");
+    this.el.remove();
+    const index = entities.indexOf(this);
+    if (index > -1){
+      entities.splice(index, 1); 
+    }
+    }
 }

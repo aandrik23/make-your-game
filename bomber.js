@@ -1,4 +1,4 @@
-import { Player, Enemy, Tile ,PowerUp} from "./classes.js";
+import { Player, Enemy, Bomb,Tile ,PowerUp} from "./classes.js";
 
 const tileMap = [
   "XXXXXXXXXXXXXXXXXXX",
@@ -27,6 +27,7 @@ const tileMap = [
 
 //lives
 let lives = 3
+let score = 0
 
 const game = document.getElementById("game");
 const ROWS = tileMap.length;
@@ -35,7 +36,9 @@ const COLS = tileMap[0].length;
 game.style.setProperty("--cols", COLS);
 game.style.setProperty("--rows", ROWS);
 
-const entities = [];
+export let entities = [];
+
+
 let player = null;
 
 // Build map
@@ -73,49 +76,58 @@ for (let y = 0; y < ROWS; y++) {
 
 let lastTime = performance.now();
 
+
+// MAIN GAMELOOP
 function gameLoop(time) {
   const delta = time - lastTime;
   lastTime = time;
 
+  // 1️⃣ Move player and enemies
   entities.forEach(e => {
-    if (e instanceof Enemy || e instanceof Player) {
+    if (e instanceof Player || e instanceof Enemy) {
       e.move(delta);
     }
   });
 
-
+  // 2️⃣ Update bombs and handle collisions
   entities.forEach(e => {
-  if (e instanceof Enemy) {
-    if (collision(player.bounds, e.bounds)) {
-      console.log("player hit by enemy");
-      playerHit()
+    // Bombs countdown their fuse
+    if (e instanceof Bomb) {
+      e.update(delta);
     }
-  }
-});
-  entities.forEach((e, index) => {
-    if (e instanceof PowerUp) {
-      if (collision(player.bounds, e.bounds)) {
-        console.log("player ate powerup");
-        playerEat(e, index);
-      }
+
+    // Check collisions with player
+    if (e instanceof Enemy && collision(player.bounds, e.bounds)) {
+      playerHit();
+    }
+
+    if (e instanceof PowerUp && collision(player.bounds, e.bounds)) {
+      playerEat(e);   // remove DOM element
     }
   });
 
+  // 3️⃣ Remove collected powerups or exploded bombs
+  entities.splice(0, entities.length, ...entities.filter(e => {
+    if (e instanceof PowerUp && e.collected) return false;
+    if (e instanceof Bomb && !document.body.contains(e.el)) return false; // exploded
+    return true;
+  }));
 
-
+  // 4️⃣ Schedule next frame
   requestAnimationFrame(gameLoop);
 }
+
+
 
 requestAnimationFrame(gameLoop);
 
 
 function collision(a, b) {
-    return a.x < b.x + b.width -1 &&   //a's top left corner doesn't reach b's top right corner
-        a.x + a.width - 1 > b.x &&   //a's top right corner passes b's top left corner
-        a.y < b.y + b.height - 1 &&  //a's top left corner doesn't reach b's bottom left corner
-        a.y + a.height - 1 > b.y;    //a's bottom left corner passes b's top left corner
+    return a.x < b.x + (b.width-3) &&   //a's top left corner doesn't reach b's top right corner
+        a.x + a.width-3 > b.x &&   //a's top right corner passes b's top left corner
+        a.y < b.y + b.height-3 &&  //a's top left corner doesn't reach b's bottom left corner
+        a.y + a.height-3 > b.y;    //a's bottom left corner passes b's top left corner
 }
-
 function playerHit() {
   lives--;
   if (lives <= 0) {
@@ -133,14 +145,9 @@ function playerHit() {
   player.posY = player.startY * 32;
   player.updatePosition();
 }
- 
-function playerEat(powerUp, index) {
-  // Optional: increment score
-  // scores++;
 
-  // Remove the element from DOM
+function playerEat(powerUp) {
+  score += 10;
   powerUp.el.remove();
-
-  // Remove it from the game entities
-  entities.splice(index, 1);
+  powerUp.collected = true; // mark for later removal
 }
