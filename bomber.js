@@ -1,27 +1,33 @@
 import { Player,Explosion , Enemy, Bomb,Tile ,PowerUp, Objective} from "./classes.js";
 
+
+// objectives : Key , Port
+// enemies : b,p,o
+// player : P
+// PowerUps : C, A, M
+
 const tileMap = [
-  "XXXXXXXXXXXXXXXXXXX",
-  "XKb B    X       AX",
-  "X XX XXX X XXX XX X",
-  "XM  B             X",
-  "X XX X XXXXX X XX X",
-  "X    X       X    X",
-  "XXXXBXXXX XXXX XXXX",
-  "   X X       X X   ",
-  "XXXX X XXrXX X XXXX",
-  "X       bpo       X",
-  "XXXX X XXXXX X XXXX",
-  "   X X       X X   ",
-  "XXXX X XXXXX X XXXX",
-  "X        X        X",
-  "X XX XXX X XXX XX X",
-  "X  X     P     X  X",
-  "XX X X XXXXX X X XX",
-  "X    X   X   X    X",
-  "X XXXXXX X XXXXXX X",
-  "XC               EX",
-  "XXXXXXXXXXXXXXXXXXX"
+  "XXXXXXXXXXXXXXXXXXX", // top wall
+  "XP    B  r  B  AEXX", // player top-left, exit top-right, some bricks
+  "X X X X X X X X X X", // alternating indestructible walls
+  "X B   B   B   B   X", // destructible bricks
+  "X X X X X X X X X X",
+  "X   B   B b B X B X",
+  "X X X X X X X X X X",
+  "X B   B   B   B   X",
+  "X X X X X X X X X X",
+  "X   B   B p B   B X",
+  "X X X X X X X X X X",
+  "X B   B   B   B   X",
+  "X X X X X X X X X X",
+  "X   B X B   B   B X",
+  "X X X X X X X X X X",
+  "X B   B o B   B   X",
+  "X X X X X X X X X X",
+  "X   B   B C B   B X",
+  "X X X X X X X X X X",
+  "XXM       X       X", // some power-ups
+  "XXXXXXXXXXXXXXXXXXX"  // bottom wall
 ];
 
 export let tileMap2D = tileMap.map(row => row.split(''));
@@ -92,6 +98,7 @@ let lastTime = performance.now();
 let fpsCounter = 0;
 let fps = 0;
 let lastFpsUpdate = performance.now();
+let startTime =performance.now();
 
 
 
@@ -109,11 +116,17 @@ function gameLoop(time) {
     lastFpsUpdate = time;
 
     // Update lives and score
-document.getElementById("lives").textContent = `Lives: ${lives}`;
-document.getElementById("score").textContent = `Score: ${score}`;
+  document.getElementById("lives").textContent = `Lives: ${lives}`;
+  document.getElementById("score").textContent = `Score: ${score}`;
 
-    // update the DOM element
-    document.getElementById("fps").textContent = `FPS: ${fps}`;
+      // update the DOM element
+      document.getElementById("fps").textContent = `FPS: ${fps}`;
+
+      // Update timer
+  const elapsed = Math.floor((time - startTime) / 1000); // in seconds
+  const minutes = Math.floor(elapsed / 60);
+  const seconds = elapsed % 60;
+  document.getElementById("timer").textContent = `Time: ${minutes}:${seconds.toString().padStart(2,'0')}`;
   }
 
   // 1️⃣ Move player and enemies
