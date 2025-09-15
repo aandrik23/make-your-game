@@ -1,4 +1,4 @@
-import { Player,Explosion , Enemy, Bomb,Tile ,PowerUp} from "./classes.js";
+import { Player,Explosion , Enemy, Bomb,Tile ,PowerUp, Objective} from "./classes.js";
 
 const tileMap = [
   "XXXXXXXXXXXXXXXXXXX",
@@ -8,11 +8,11 @@ const tileMap = [
   "X XX X XXXXX X XX X",
   "X    X       X    X",
   "XXXXBXXXX XXXX XXXX",
-  "BBBX X       X XBBB",
+  "   X X       X X   ",
   "XXXX X XXrXX X XXXX",
   "X       bpo       X",
   "XXXX X XXXXX X XXXX",
-  "BBBX X       X XBBB",
+  "   X X       X X   ",
   "XXXX X XXXXX X XXXX",
   "X        X        X",
   "X XX XXX X XXX XX X",
@@ -81,6 +81,15 @@ for (let y = 0; y < ROWS; y++) {
   }
 }
 
+// After building map & bricks:
+
+const KeyBrick = bricks[Math.floor(Math.random() * bricks.length)];
+KeyBrick.hiddenItem = "key";  // could also do "port" if you want
+
+
+
+
+
 let lastTime = performance.now();
 
 
@@ -122,6 +131,29 @@ function gameLoop(time) {
       }
     });
   }
+  if (e instanceof Objective) {
+  // if it’s the key
+  if (e.el.classList.contains("key") && collision(player.bounds, e.bounds)) {
+    e.el.remove();
+    e.collected = true;
+    // maybe open the port or mark that player has key
+    player.hasKey = true;
+   // 🔹 Spawn port somewhere random on floor
+    spawnPortRandom();
+    
+  }
+
+  // if it’s the port
+  if (e.el.classList.contains("port") && collision(player.bounds, e.bounds)) {
+    if (player.hasKey) {
+      alert("You escaped! Level complete!");
+      // proceed to next level
+    } else {
+      // maybe show message: "Need the key first"
+    }
+  }
+}
+
 
 
     // Check collisions with player
@@ -134,6 +166,8 @@ function gameLoop(time) {
       playerEat(e);   // remove DOM element
     }
   });
+
+  
 
   // 3️⃣ Remove collected powerups or exploded bombs
   entities.splice(0, entities.length, ...entities.filter(e => {
@@ -189,4 +223,29 @@ function playerEat(powerUp) {
   player.bombRadius++;   // INCREASE radius
   powerUp.el.remove();
   powerUp.collected = true; // mark for later removal
+}
+
+
+let portSpawned = false; // track if we already spawned a port
+
+
+function spawnPortRandom() {
+   if (portSpawned) return; // already spawned → skip
+  // Collect all floor positions
+  const floorTiles = [];
+  for (let y = 0; y < tileMap2D.length; y++) {
+    for (let x = 0; x < tileMap2D[0].length; x++) {
+      if (tileMap2D[y][x] === " ") {
+        floorTiles.push({ x, y });
+      }
+    }
+  }
+
+  // Pick a random floor
+  if (floorTiles.length > 0) {
+    const randomTile = floorTiles[Math.floor(Math.random() * floorTiles.length)];
+    const portObj = new Objective(randomTile.x, randomTile.y, "port");
+    entities.push(portObj);
+    portSpawned=true
+  }
 }

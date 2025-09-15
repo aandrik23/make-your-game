@@ -94,6 +94,9 @@ export class Player extends Entity {
     this.flickerElapsed = 0;
     this.flickerInterval = 200; // blink every 200ms
 
+    this.hasKey = false; // Port
+
+
     window.addEventListener("keydown", (e) => {
       if (["b","B","ArrowUp","ArrowDown","ArrowLeft","ArrowRight","w","a","s","d"].includes(e.key)) {
         e.preventDefault();
@@ -281,6 +284,20 @@ export class Explosion extends Entity {
 
 }
 
+
+export class Objective extends Entity {
+  constructor(x,y,type) {
+    super(x, y, type);
+    this.collected = false; // only for key
+    this.active = type === "port" ? false : true;
+  }
+}
+
+
+
+
+
+
 function spawnExplosions(x, y, radius, tileMap) {
   // Center explosion
   entities.push(new Explosion(x, y));
@@ -310,10 +327,16 @@ function spawnExplosions(x, y, radius, tileMap) {
       // Destroy brick if present
       if (tileChar === "B") {
         tileMap2D[ny][nx] = " ";        // mark as floor
-        const brick = bricks.find(b => b.x === nx && b.y === ny);
+
+      const brick = bricks.find(b => b.x === nx && b.y === ny);
         if (brick) {
           brick.tile.className = "tile floor"; // turn brick into floor visually
         }
+         // Reveal hidden key
+      if (brick.hiddenItem === "key") {
+        const keyObj = new Objective(nx, ny, "key");
+        entities.push(keyObj);
+      }
         break; // stop explosion after hitting brick
       }
     }
