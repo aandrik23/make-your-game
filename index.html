@@ -8,17 +8,11 @@
    
 </head>
 <body>
-    <div id="fps" style="
-  position: absolute;
-  top: 5px;
-  left: 5px;
-  color: white;
-  font-family: monospace;
-  background: rgba(0,0,0,0.5);
-  padding: 2px 6px;
-  border-radius: 4px;
-  font-size: 14px;
-">FPS: 0</div>
+  <div id="hud">
+  <span id="fps">FPS: 0</span>
+  <span id="lives">Lives: 3</span>
+  <span id="score">Score: 0</span>
+</div>
 
     <div id="game"></div>
      <script type="module" src="./bomber.js"></script>

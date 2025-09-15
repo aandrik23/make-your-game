@@ -108,6 +108,10 @@ function gameLoop(time) {
     fpsCounter = 0;
     lastFpsUpdate = time;
 
+    // Update lives and score
+document.getElementById("lives").textContent = `Lives: ${lives}`;
+document.getElementById("score").textContent = `Score: ${score}`;
+
     // update the DOM element
     document.getElementById("fps").textContent = `FPS: ${fps}`;
   }
