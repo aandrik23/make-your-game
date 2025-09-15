@@ -88,9 +88,12 @@ KeyBrick.hiddenItem = "key";  // could also do "port" if you want
 
 
 
-
-
 let lastTime = performance.now();
+let fpsCounter = 0;
+let fps = 0;
+let lastFpsUpdate = performance.now();
+
+
 
 
 // MAIN GAMELOOP
@@ -98,13 +101,24 @@ function gameLoop(time) {
   const delta = time - lastTime;
   lastTime = time;
 
+  // ✅ FPS calculation
+  fpsCounter++;
+  if (time - lastFpsUpdate >= 1000) { // every 1 second
+    fps = fpsCounter;
+    fpsCounter = 0;
+    lastFpsUpdate = time;
+
+    // update the DOM element
+    document.getElementById("fps").textContent = `FPS: ${fps}`;
+  }
+
   // 1️⃣ Move player and enemies
   entities.forEach(e => {
   if (e instanceof Player || e instanceof Enemy) {
     if (e instanceof Player) e.update(delta); // handles invulnerability timer
     else e.move(delta);
   }
-});
+  });
 
   // 2️⃣ Update bombs and handle collisions
   entities.forEach(e => {
