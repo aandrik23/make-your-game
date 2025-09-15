@@ -1,13 +1,17 @@
-import { entities } from './bomber.js';
-
+import { entities,bricks, tileMap2D, collision,score } from './bomber.js';
 
 export class Tile {
   constructor(x, y, cssClass) {
-    const tile = document.createElement("div");
-    tile.classList.add("tile", cssClass);
-    tile.dataset.x = x;
-    tile.dataset.y = y;
-    document.getElementById("game").appendChild(tile);
+    // ✅ store the element in this.tile
+    this.tile = document.createElement("div");
+    this.tile.classList.add("tile", cssClass);
+    this.tile.dataset.x = x;
+    this.tile.dataset.y = y;
+    document.getElementById("game").appendChild(this.tile);
+
+    this.x = x;
+    this.y = y;
+    this.cssClass = cssClass;
   }
 }
 
@@ -74,42 +78,39 @@ export class Entity {
     // overridden in subclasses
   }
 }
-
 export class Player extends Entity {
   constructor(x, y, tileMap) {
     super(x, y, "bomber");
     this.tileMap = tileMap;
     this.nextDir = { dx: 0, dy: 0 };
     this.bombs = [];
+    this.bombRadius = 1;  // radius logic
+
+    // Invulnerability setup
+    this.invulnerable = false;
+    this.invulTimer = 0;
+    this.invulDuration = 2500; // 2.5 seconds
+
+    this.flickerElapsed = 0;
+    this.flickerInterval = 200; // blink every 200ms
 
     window.addEventListener("keydown", (e) => {
-  if (["b","B","ArrowUp","ArrowDown","ArrowLeft","ArrowRight","w","a","s","d"].includes(e.key)) {
-    e.preventDefault(); // stop the browser from handling it
-  }
+      if (["b","B","ArrowUp","ArrowDown","ArrowLeft","ArrowRight","w","a","s","d"].includes(e.key)) {
+        e.preventDefault();
+      }
 
-  switch (e.key) {
-    case "ArrowUp":
-    case "w":
-      this.nextDir = { dx: 0, dy: -1 }; break;
-    case "ArrowDown":
-    case "s":
-      this.nextDir = { dx: 0, dy: 1 }; break;
-    case "ArrowLeft":
-    case "a":
-      this.nextDir = { dx: -1, dy: 0 }; break;
-    case "ArrowRight":
-    case "d":
-      this.nextDir = { dx: 1, dy: 0 }; break;
-    case "B":
-    case "b":
-      this.dropBomb(); break;
-  }
-});
-
+      switch (e.key) {
+        case "ArrowUp": case "w": this.nextDir = { dx: 0, dy: -1 }; break;
+        case "ArrowDown": case "s": this.nextDir = { dx: 0, dy: 1 }; break;
+        case "ArrowLeft": case "a": this.nextDir = { dx: -1, dy: 0 }; break;
+        case "ArrowRight": case "d": this.nextDir = { dx: 1, dy: 0 }; break;
+        case "B": case "b": this.dropBomb(); break;
+      }
+    });
   }
 
   dropBomb() {
-    const bomb = new Bomb(this.x, this.y);
+    const bomb = new Bomb(this.x, this.y, this.bombRadius, this.tileMap);
     entities.push(bomb);
     this.bombs.push(bomb);
   }
@@ -118,12 +119,47 @@ export class Player extends Entity {
     const newX = this.x + this.nextDir.dx;
     const newY = this.y + this.nextDir.dy;
 
-    if (this.tileMap[newY][newX] !== "X" && this.tileMap[newY][newX] !== "B") {
+    // Check if target tile is blocked by wall, brick, or bomb
+    const blocked = this.tileMap[newY][newX] === "X" || 
+                    this.tileMap[newY][newX] === "B" || 
+                    entities.some(e => e instanceof Bomb && e.x === newX && e.y === newY);
+
+    if (!blocked) {
       this.targetX = newX;
       this.targetY = newY;
       this.x = newX;
       this.y = newY;
     }
+  }
+
+
+  update(delta) {
+    // Handle invulnerability blinking
+    if (this.invulnerable) {
+      this.invulTimer += delta;
+      this.flickerElapsed += delta;
+
+      if (this.flickerElapsed >= this.flickerInterval) {
+        this.el.style.visibility = this.el.style.visibility === "hidden" ? "visible" : "hidden";
+        this.flickerElapsed = 0;
+      }
+
+      if (this.invulTimer >= this.invulDuration) {
+        this.invulnerable = false;
+        this.invulTimer = 0;
+        this.el.style.visibility = "visible";
+      }
+    }
+
+    this.move(delta);
+  }
+
+
+  // Call this when player respawns
+  activateInvulnerability() {
+    this.invulnerable = true;
+    this.invulTimer = 0;
+   
   }
 }
 
@@ -144,13 +180,19 @@ export class Enemy extends Entity {
       { dx: 0, dy: -1 }
     ];
 
+    
     const validDirs = dirs.filter(dir => {
       const newX = this.targetX + dir.dx;
       const newY = this.targetY + dir.dy;
       if (newX < 0 || newX >= this.COLS || newY < 0 || newY >= this.ROWS) return false;
       const tileChar = this.tileMap[newY][newX];
-      return tileChar !== "X" && tileChar !== "B";
+
+      // Add bomb check
+      const bombBlocked = entities.some(e => e instanceof Bomb && e.x === newX && e.y === newY);
+
+      return tileChar !== "X" && tileChar !== "B" && !bombBlocked;
     });
+
 
     if (validDirs.length === 0) return;
 
@@ -182,10 +224,12 @@ export class PowerUp extends Entity {
 
 
 export class Bomb extends Entity {
-  constructor(x,y) {
+  constructor(x,y,radius,tileMap) {
     super(x,y,"bomb")
     this.fuse = 3000
     this.time = 0
+    this.radius = radius
+    this.tileMap = tileMap
   }
   update(delta) {
     this.time +=delta
@@ -197,9 +241,83 @@ export class Bomb extends Entity {
   explode(){
     console.log("💥 Bomb exploded!");
     this.el.remove();
+
+    const explosion = new Explosion(this.x, this.y);
+    entities.push(explosion);
+    //spawn explosion tiles
+    
+    spawnExplosions(this.x,this.y,this.radius,this.tileMap);
+    
+    // remove bomb
     const index = entities.indexOf(this);
     if (index > -1){
       entities.splice(index, 1); 
     }
     }
 }
+
+export class Explosion extends Entity {
+  constructor(x,y) {
+    super(x,y,"explosion")
+    this.fuse = 1000
+    this.time = 0
+    
+  }
+
+  update(delta) {
+    this.time +=delta
+    if (this.time >= this.fuse) {
+      this.explode()
+    }
+  }
+  explode(){
+    console.log("💥 explosion ended!");
+    this.el.remove();
+    const index = entities.indexOf(this);
+    if (index > -1){
+      entities.splice(index, 1); 
+    }
+    }
+
+}
+
+function spawnExplosions(x, y, radius, tileMap) {
+  // Center explosion
+  entities.push(new Explosion(x, y));
+
+  const dirs = [
+    { dx: 1, dy: 0 },
+    { dx: -1, dy: 0 },
+    { dx: 0, dy: 1 },
+    { dx: 0, dy: -1 }
+  ];
+
+  dirs.forEach(dir => {
+    for (let i = 1; i <= radius; i++) {
+      const nx = x + dir.dx * i;
+      const ny = y + dir.dy * i;
+
+      if (ny < 0 || ny >= tileMap.length || nx < 0 || nx >= tileMap[0].length) break;
+
+      const tileChar = tileMap[ny][nx];
+
+      if (tileChar === "X") break; // wall
+
+      entities.push(new Explosion(nx, ny));
+
+      
+
+      // Destroy brick if present
+      if (tileChar === "B") {
+        tileMap2D[ny][nx] = " ";        // mark as floor
+        const brick = bricks.find(b => b.x === nx && b.y === ny);
+        if (brick) {
+          brick.tile.className = "tile floor"; // turn brick into floor visually
+        }
+        break; // stop explosion after hitting brick
+      }
+    }
+  });
+}
+
+

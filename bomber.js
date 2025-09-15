@@ -1,4 +1,4 @@
-import { Player, Enemy, Bomb,Tile ,PowerUp} from "./classes.js";
+import { Player,Explosion , Enemy, Bomb,Tile ,PowerUp} from "./classes.js";
 
 const tileMap = [
   "XXXXXXXXXXXXXXXXXXX",
@@ -24,10 +24,13 @@ const tileMap = [
   "XXXXXXXXXXXXXXXXXXX"
 ];
 
+export let tileMap2D = tileMap.map(row => row.split(''));
+
+
 
 //lives
 let lives = 3
-let score = 0
+export let score = 0
 
 const game = document.getElementById("game");
 const ROWS = tileMap.length;
@@ -40,6 +43,7 @@ export let entities = [];
 
 
 let player = null;
+export let bricks = [];
 
 // Build map
 for (let y = 0; y < ROWS; y++) {
@@ -48,21 +52,24 @@ for (let y = 0; y < ROWS; y++) {
 
     // Tiles
     if (char === "X") new Tile(x, y, "wall");
-    else if (char === "B") new Tile(x, y, "brick");
+    else if (char === "B") {
+      const brickTile = new Tile(x, y, "brick");
+      bricks.push(brickTile); // store reference in an array
+    }
     else new Tile(x, y, "floor");
 
     // Entities
     switch (char) {
       case "P":
-        player = new Player(x, y,tileMap);
+        player = new Player(x, y,tileMap2D);
         player.startX = x;
         player.startY = y;
         entities.push(player);
         break;
-      case "b": entities.push(new Enemy(x, y, "blue", tileMap, COLS, ROWS)); break;
-      case "o": entities.push(new Enemy(x, y, "orange", tileMap, COLS, ROWS)); break;
-      case "p": entities.push(new Enemy(x, y, "pink", tileMap, COLS, ROWS)); break;
-      case "r": entities.push(new Enemy(x, y, "red", tileMap, COLS, ROWS)); break;
+      case "b": entities.push(new Enemy(x, y, "blue", tileMap2D, COLS, ROWS)); break;
+      case "o": entities.push(new Enemy(x, y, "orange", tileMap2D, COLS, ROWS)); break;
+      case "p": entities.push(new Enemy(x, y, "pink", tileMap2D, COLS, ROWS)); break;
+      case "r": entities.push(new Enemy(x, y, "red", tileMap2D, COLS, ROWS)); break;
       case "C": case "A": case "M":
       const powerUp = new PowerUp(
         x, y,
@@ -84,22 +91,44 @@ function gameLoop(time) {
 
   // 1️⃣ Move player and enemies
   entities.forEach(e => {
-    if (e instanceof Player || e instanceof Enemy) {
-      e.move(delta);
-    }
-  });
+  if (e instanceof Player || e instanceof Enemy) {
+    if (e instanceof Player) e.update(delta); // handles invulnerability timer
+    else e.move(delta);
+  }
+});
 
   // 2️⃣ Update bombs and handle collisions
   entities.forEach(e => {
+    
     // Bombs countdown their fuse
-    if (e instanceof Bomb) {
-      e.update(delta);
-    }
+      if (e instanceof Bomb || e instanceof Explosion) {
+        e.update(delta);
+      }
+
+    // Explosion's collisions
+    if (e instanceof Explosion) {
+    entities.forEach(en => {
+      if (en instanceof Enemy && collision(e.bounds, en.bounds)) {
+        // Remove enemy
+        en.el.remove();
+        const index = entities.indexOf(en);
+        if (index > -1) entities.splice(index, 1);
+        
+        // Increase score
+        score += 100;
+      }
+      if (en instanceof Player && collision(e.bounds,en.bounds)) {
+        playerHit()
+      }
+    });
+  }
+
 
     // Check collisions with player
     if (e instanceof Enemy && collision(player.bounds, e.bounds)) {
       playerHit();
     }
+
 
     if (e instanceof PowerUp && collision(player.bounds, e.bounds)) {
       playerEat(e);   // remove DOM element
@@ -122,32 +151,42 @@ function gameLoop(time) {
 requestAnimationFrame(gameLoop);
 
 
-function collision(a, b) {
+export function collision(a, b) {
     return a.x < b.x + (b.width-3) &&   //a's top left corner doesn't reach b's top right corner
         a.x + a.width-3 > b.x &&   //a's top right corner passes b's top left corner
         a.y < b.y + b.height-3 &&  //a's top left corner doesn't reach b's bottom left corner
         a.y + a.height-3 > b.y;    //a's bottom left corner passes b's top left corner
 }
-function playerHit() {
-  lives--;
-  if (lives <= 0) {
-    alert("Game Over!");
-    window.location.reload();
-    return;
-  }
 
-  // Reset player position
-  player.x = player.startX;
-  player.y = player.startY;
-  player.targetX = player.startX;
-  player.targetY = player.startY;
-  player.posX = player.startX * 32;
-  player.posY = player.startY * 32;
-  player.updatePosition();
+function playerHit() {
+  if (!player.invulnerable) {
+    lives--;
+    if (lives <= 0) {
+      alert("Game Over!");
+      window.location.reload();
+      return;
+    }
+
+    // Reset player position
+    player.x = player.startX;
+    player.y = player.startY;
+    player.targetX = player.startX;
+    player.targetY = player.startY;
+    player.posX = player.startX * 32;
+    player.posY = player.startY * 32;
+    player.updatePosition();
+
+    // Activate temporary invulnerability
+    player.activateInvulnerability();
+  }
 }
+
+
+
 
 function playerEat(powerUp) {
   score += 10;
+  player.bombRadius++;   // INCREASE radius
   powerUp.el.remove();
   powerUp.collected = true; // mark for later removal
 }
