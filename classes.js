@@ -1,4 +1,4 @@
-import { entities,bricks, tileMap2D, collision,score } from './bomber.js';
+import { entities,bricks, tileMap2D, COLS,ROWS , addScore} from './bomber.js';
 
 export class Tile {
   constructor(x, y, cssClass) {
@@ -173,7 +173,46 @@ export class Enemy extends Entity {
     this.tileMap = tileMap;
     this.COLS = COLS;
     this.ROWS = ROWS;
+
+    // Invulnerability setup
+    this.invulnerable = false;
+    this.invulTimer = 0;
+    this.invulDuration = 2500; // 2.5 seconds
+
+    this.flickerElapsed = 0;
+    this.flickerInterval = 200; // blink every 200ms
   }
+
+  // Call this when enemy spawns
+
+  activateInvulnerability() {
+    this.invulnerable = true;
+    this.invulTimer = 0;
+    this.flickerElapsed = 0;
+  }
+
+  update(delta) {
+    // Handle invulnerability blinking
+    if (this.invulnerable) {
+      this.invulTimer += delta;
+      this.flickerElapsed += delta;
+
+      if (this.flickerElapsed >= this.flickerInterval) {
+        this.el.style.visibility = this.el.style.visibility === "hidden" ? "visible" : "hidden";
+        this.flickerElapsed = 0;
+      }
+
+      if (this.invulTimer >= this.invulDuration) {
+        this.invulnerable = false;
+        this.invulTimer = 0;
+        this.el.style.visibility = "visible";
+      }
+    }
+
+    this.move(delta);
+  }
+
+
 
   chooseDirection() {
     const dirs = [
@@ -326,17 +365,24 @@ function spawnExplosions(x, y, radius, tileMap) {
 
       // Destroy brick if present
       if (tileChar === "B") {
+        addScore(15)
+
         tileMap2D[ny][nx] = " ";        // mark as floor
 
       const brick = bricks.find(b => b.x === nx && b.y === ny);
         if (brick) {
           brick.tile.className = "tile floor"; // turn brick into floor visually
         }
-         // Reveal hidden key
-      if (brick.hiddenItem === "key") {
-        const keyObj = new Objective(nx, ny, "key");
-        entities.push(keyObj);
-      }
+        if (brick.hiddenItem) {
+          if (brick.hiddenItem === "key") {
+            const keyObj = new Objective(nx, ny, "key");
+            entities.push(keyObj);
+          } else if (brick.hiddenItem.type === "enemy") {
+            const enemy = new Enemy(nx, ny, brick.hiddenItem.color, tileMap2D, COLS, ROWS);
+            enemy.activateInvulnerability()
+            entities.push(enemy);
+          }
+        }
         break; // stop explosion after hitting brick
       }
     }

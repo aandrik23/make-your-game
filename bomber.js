@@ -39,8 +39,8 @@ let lives = 3
 export let score = 0
 
 const game = document.getElementById("game");
-const ROWS = tileMap.length;
-const COLS = tileMap[0].length;
+export const ROWS = tileMap.length;
+export const COLS = tileMap[0].length;
 
 game.style.setProperty("--cols", COLS);
 game.style.setProperty("--rows", ROWS);
@@ -60,6 +60,13 @@ for (let y = 0; y < ROWS; y++) {
     if (char === "X") new Tile(x, y, "wall");
     else if (char === "B") {
       const brickTile = new Tile(x, y, "brick");
+
+      if (Math.random() < 0.1) {
+        // choose random enemy type
+        const enemyTypes = ["blue", "orange", "pink", "red"];
+        const type = enemyTypes[Math.floor(Math.random() * enemyTypes.length)];
+        brickTile.hiddenItem = { type: "enemy", color: type };
+      }
       bricks.push(brickTile); // store reference in an array
     }
     else new Tile(x, y, "floor");
@@ -132,8 +139,7 @@ function gameLoop(time) {
   // 1️⃣ Move player and enemies
   entities.forEach(e => {
   if (e instanceof Player || e instanceof Enemy) {
-    if (e instanceof Player) e.update(delta); // handles invulnerability timer
-    else e.move(delta);
+    e.update(delta); // Both player and enemy handle movement + invulnerability
   }
   });
 
@@ -149,13 +155,12 @@ function gameLoop(time) {
     if (e instanceof Explosion) {
     entities.forEach(en => {
       if (en instanceof Enemy && collision(e.bounds, en.bounds)) {
-        // Remove enemy
-        en.el.remove();
-        const index = entities.indexOf(en);
-        if (index > -1) entities.splice(index, 1);
-        
-        // Increase score
-        score += 100;
+        if (!en.invulnerable) { // <-- skip if invulnerable
+          en.el.remove();
+          const index = entities.indexOf(en);
+          if (index > -1) entities.splice(index, 1);
+          score += 100;
+        }
       }
       if (en instanceof Player && collision(e.bounds,en.bounds)) {
         playerHit()
@@ -250,7 +255,7 @@ function playerHit() {
 
 
 function playerEat(powerUp) {
-  score += 10;
+  addScore(10);
   player.bombRadius++;   // INCREASE radius
   powerUp.el.remove();
   powerUp.collected = true; // mark for later removal
@@ -279,4 +284,8 @@ function spawnPortRandom() {
     entities.push(portObj);
     portSpawned=true
   }
+}
+
+export function addScore(points) {
+  score += points;
 }
