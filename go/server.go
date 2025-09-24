@@ -27,9 +27,16 @@ func main() {
 		log.Fatalf("serve dir: %v", err)
 	}
 
-	// File server
+	// Initialize scoreboard API
+	scoreHandler := initScoreboardAPI()
+
+	mux := http.NewServeMux()
+
+	mux.Handle("/api/scores", scoreHandler)
+
+	// File server for static files
 	fs := http.FileServer(http.Dir(*dir))
-	handler := http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+	mux.Handle("/", http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		// light security headers
 		w.Header().Set("X-Content-Type-Options", "nosniff")
 		w.Header().Set("Referrer-Policy", "no-referrer")
@@ -51,7 +58,9 @@ func main() {
 		start := time.Now()
 		fs.ServeHTTP(w, r)
 		log.Printf("%s %s %s", r.Method, r.URL.Path, time.Since(start))
-	})
+	}))
+
+	handler := mux
 
 	// Bind first so we *know* it started
 	ln, err := net.Listen("tcp4", *addr)
