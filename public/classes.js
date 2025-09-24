@@ -98,6 +98,11 @@ export class Player extends Entity {
 
 
     window.addEventListener("keydown", (e) => {
+      // Import gameEnded from bomber.js - check if game has ended
+      if (window.gameEnded) {
+        return; // Don't process any game controls when game has ended
+      }
+      
       if (["b","B","ArrowUp","ArrowDown","ArrowLeft","ArrowRight","w","a","s","d"].includes(e.key)) {
         e.preventDefault();
       }
