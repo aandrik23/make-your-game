@@ -1,7 +1,7 @@
-import { entities, player, tileMap2D } from "./bomber.js";
+import { entities, player } from "./bomber.js";
 import { addScore, lives, score, playerHit } from "./gameState.js";
 import { Player, Bomb, PowerUp, Explosion, Enemy, Objective } from "./classes.js";
-
+import { tileMap2D } from "./mapData.js";
 let lastTime = performance.now();
 let fpsCounter = 0;
 let fps = 0;

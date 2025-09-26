@@ -1,5 +1,6 @@
-import { entities, bricks, tileMap2D, COLS, ROWS } from './bomber.js';
+import { entities, bricks, COLS, ROWS } from './bomber.js';
 import { addScore } from './gameState.js';
+import { tileMap2D } from './mapData.js';
 
 export class Tile {
   constructor(x, y, cssClass) {
