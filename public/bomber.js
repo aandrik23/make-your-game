@@ -1,13 +1,8 @@
-import { Player, Explosion, Enemy, Bomb, Tile, PowerUp, Objective } from "./classes.js";
+import { Player, Enemy, Tile, PowerUp } from "./classes.js";
 
-import { gameLoop } from "./gameLoop.js";
 
 import { tileMap2D, tileMap } from "./mapData.js";
 
-// objectives : Key , Port
-// enemies : b,p,o
-// player : P
-// PowerUps : C, A, M
 
 
 const game = document.getElementById("game");
@@ -23,54 +18,63 @@ export let entities = [];
 export let player = null;
 export let bricks = [];
 
-// Build map
-for (let y = 0; y < ROWS; y++) {
-  for (let x = 0; x < COLS; x++) {
-    const char = tileMap[y][x];
 
-    // Tiles
-    if (char === "X") new Tile(x, y, "wall");
-    else if (char === "B") {
-      const brickTile = new Tile(x, y, "brick");
+export function buildMap() {
 
-      if (Math.random() < 0.1) {
-        // choose random enemy type
-        const enemyTypes = ["blue", "orange", "pink", "red"];
-        const type = enemyTypes[Math.floor(Math.random() * enemyTypes.length)];
-        brickTile.hiddenItem = { type: "enemy", color: type };
-      }
-      bricks.push(brickTile); // store reference in an array
+    entities.length = 0;
+    bricks.length = 0;
+    player = null;
+    document.getElementById("game").innerHTML = "";
+
+    // Build map
+    for (let y = 0; y < ROWS; y++) {
+        for (let x = 0; x < COLS; x++) {
+            const char = tileMap[y][x];
+
+            // Tiles
+            if (char === "X") new Tile(x, y, "wall");
+            else if (char === "B") {
+                const brickTile = new Tile(x, y, "brick");
+
+                if (Math.random() < 0.1) {
+                    // choose random enemy type
+                    const enemyTypes = ["blue", "orange", "pink", "red"];
+                    const type = enemyTypes[Math.floor(Math.random() * enemyTypes.length)];
+                    brickTile.hiddenItem = { type: "enemy", color: type };
+                }
+                bricks.push(brickTile); // store reference in an array
+            }
+            else new Tile(x, y, "floor");
+
+            // Entities
+            switch (char) {
+
+                case "P":
+                    player = new Player(x, y, tileMap2D); // <--- assign to player
+                    entities.push(player);
+                    break;
+                case "b": entities.push(new Enemy(x, y, "blue", tileMap2D, COLS, ROWS)); break;
+                case "o": entities.push(new Enemy(x, y, "orange", tileMap2D, COLS, ROWS)); break;
+                case "p": entities.push(new Enemy(x, y, "pink", tileMap2D, COLS, ROWS)); break;
+                case "r": entities.push(new Enemy(x, y, "red", tileMap2D, COLS, ROWS)); break;
+                case "C": case "A": case "M":
+                    const powerUp = new PowerUp(
+                        x, y,
+                        char === "C" ? "cherry" : char === "A" ? "apple" : "banana"
+                    );
+                    entities.push(powerUp);
+                    break;
+            }
+        }
     }
-    else new Tile(x, y, "floor");
 
-    // Entities
-    switch (char) {
+    // After building map & bricks:
 
-      case "P":
-        player = new Player(x, y, tileMap2D); // <--- assign to player
-        entities.push(player);
-        break;
-      case "b": entities.push(new Enemy(x, y, "blue", tileMap2D, COLS, ROWS)); break;
-      case "o": entities.push(new Enemy(x, y, "orange", tileMap2D, COLS, ROWS)); break;
-      case "p": entities.push(new Enemy(x, y, "pink", tileMap2D, COLS, ROWS)); break;
-      case "r": entities.push(new Enemy(x, y, "red", tileMap2D, COLS, ROWS)); break;
-      case "C": case "A": case "M":
-        const powerUp = new PowerUp(
-          x, y,
-          char === "C" ? "cherry" : char === "A" ? "apple" : "banana"
-        );
-        entities.push(powerUp);
-        break;
-    }
-  }
+    const KeyBrick = bricks[Math.floor(Math.random() * bricks.length)];
+    KeyBrick.hiddenItem = "key";  // could also do "port" if you want
 }
 
-// After building map & bricks:
 
-const KeyBrick = bricks[Math.floor(Math.random() * bricks.length)];
-KeyBrick.hiddenItem = "key";  // could also do "port" if you want
-
-requestAnimationFrame(gameLoop);
 
 
 

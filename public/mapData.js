@@ -1,3 +1,11 @@
+
+// objectives : Key , Port
+// enemies : b,p,o
+// player : P
+// PowerUps : C, A, M
+
+
+
 export const tileMap = [
     "XXXXXXXXXXXXXXXXXXX", // top wall
     "XP    B  r  B  AEXX", // player top-left, exit top-right, some bricks
