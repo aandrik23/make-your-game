@@ -1,4 +1,5 @@
-import { entities,bricks, tileMap2D, COLS,ROWS , addScore} from './bomber.js';
+import { entities, bricks, tileMap2D, COLS, ROWS } from './bomber.js';
+import { addScore } from './gameState.js';
 
 export class Tile {
   constructor(x, y, cssClass) {
@@ -21,7 +22,7 @@ export class Entity {
     this.x = x;
     this.y = y;
     this.posX = x * 32;
-    this.posY = y * 32; 
+    this.posY = y * 32;
     this.speed = 100;
 
     this.targetX = x;
@@ -42,13 +43,13 @@ export class Entity {
   get height() { return 32; }
 
   get bounds() {
-  return {
-    x: this.posX,
-    y: this.posY,
-    width: this.width,
-    height: this.height
-  };
-}
+    return {
+      x: this.posX,
+      y: this.posY,
+      width: this.width,
+      height: this.height
+    };
+  }
 
 
   updatePosition() {
@@ -86,6 +87,10 @@ export class Player extends Entity {
     this.bombs = [];
     this.bombRadius = 1;  // radius logic
 
+    //start coordinates
+    this.startX = x;
+    this.startY = y;
+
     // Invulnerability setup
     this.invulnerable = false;
     this.invulTimer = 0;
@@ -98,7 +103,7 @@ export class Player extends Entity {
 
 
     window.addEventListener("keydown", (e) => {
-      if (["b","B","ArrowUp","ArrowDown","ArrowLeft","ArrowRight","w","a","s","d"].includes(e.key)) {
+      if (["b", "B", "ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", "w", "a", "s", "d"].includes(e.key)) {
         e.preventDefault();
       }
 
@@ -112,6 +117,18 @@ export class Player extends Entity {
     });
   }
 
+
+  // Inside Player class
+  resetPosition(tileSize = 32) {
+    this.x = this.startX;
+    this.y = this.startY;
+    this.targetX = this.startX;
+    this.targetY = this.startY;
+    this.posX = this.startX * tileSize;
+    this.posY = this.startY * tileSize;
+    this.updatePosition();
+  }
+
   dropBomb() {
     const bomb = new Bomb(this.x, this.y, this.bombRadius, this.tileMap);
     entities.push(bomb);
@@ -123,9 +140,9 @@ export class Player extends Entity {
     const newY = this.y + this.nextDir.dy;
 
     // Check if target tile is blocked by wall, brick, or bomb
-    const blocked = this.tileMap[newY][newX] === "X" || 
-                    this.tileMap[newY][newX] === "B" || 
-                    entities.some(e => e instanceof Bomb && e.x === newX && e.y === newY);
+    const blocked = this.tileMap[newY][newX] === "X" ||
+      this.tileMap[newY][newX] === "B" ||
+      entities.some(e => e instanceof Bomb && e.x === newX && e.y === newY);
 
     if (!blocked) {
       this.targetX = newX;
@@ -162,7 +179,7 @@ export class Player extends Entity {
   activateInvulnerability() {
     this.invulnerable = true;
     this.invulTimer = 0;
-   
+
   }
 }
 
@@ -222,7 +239,7 @@ export class Enemy extends Entity {
       { dx: 0, dy: -1 }
     ];
 
-    
+
     const validDirs = dirs.filter(dir => {
       const newX = this.targetX + dir.dx;
       const newY = this.targetY + dir.dy;
@@ -266,66 +283,66 @@ export class PowerUp extends Entity {
 
 
 export class Bomb extends Entity {
-  constructor(x,y,radius,tileMap) {
-    super(x,y,"bomb")
+  constructor(x, y, radius, tileMap) {
+    super(x, y, "bomb")
     this.fuse = 3000
     this.time = 0
     this.radius = radius
     this.tileMap = tileMap
   }
   update(delta) {
-    this.time +=delta
+    this.time += delta
     if (this.time >= this.fuse) {
       this.explode()
     }
   }
 
-  explode(){
+  explode() {
     console.log("💥 Bomb exploded!");
     this.el.remove();
 
     const explosion = new Explosion(this.x, this.y);
     entities.push(explosion);
     //spawn explosion tiles
-    
-    spawnExplosions(this.x,this.y,this.radius,this.tileMap);
-    
+
+    spawnExplosions(this.x, this.y, this.radius, this.tileMap);
+
     // remove bomb
     const index = entities.indexOf(this);
-    if (index > -1){
-      entities.splice(index, 1); 
+    if (index > -1) {
+      entities.splice(index, 1);
     }
-    }
+  }
 }
 
 export class Explosion extends Entity {
-  constructor(x,y) {
-    super(x,y,"explosion")
+  constructor(x, y) {
+    super(x, y, "explosion")
     this.fuse = 1000
     this.time = 0
-    
+
   }
 
   update(delta) {
-    this.time +=delta
+    this.time += delta
     if (this.time >= this.fuse) {
       this.explode()
     }
   }
-  explode(){
+  explode() {
     console.log("💥 explosion ended!");
     this.el.remove();
     const index = entities.indexOf(this);
-    if (index > -1){
-      entities.splice(index, 1); 
+    if (index > -1) {
+      entities.splice(index, 1);
     }
-    }
+  }
 
 }
 
 
 export class Objective extends Entity {
-  constructor(x,y,type) {
+  constructor(x, y, type) {
     super(x, y, type);
     this.collected = false; // only for key
     this.active = type === "port" ? false : true;
@@ -361,7 +378,7 @@ function spawnExplosions(x, y, radius, tileMap) {
 
       entities.push(new Explosion(nx, ny));
 
-      
+
 
       // Destroy brick if present
       if (tileChar === "B") {
@@ -369,7 +386,7 @@ function spawnExplosions(x, y, radius, tileMap) {
 
         tileMap2D[ny][nx] = " ";        // mark as floor
 
-      const brick = bricks.find(b => b.x === nx && b.y === ny);
+        const brick = bricks.find(b => b.x === nx && b.y === ny);
         if (brick) {
           brick.tile.className = "tile floor"; // turn brick into floor visually
         }
