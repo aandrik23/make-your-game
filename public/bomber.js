@@ -1,7 +1,8 @@
 import { Player, Enemy, Tile, PowerUp } from "./classes.js";
+import { resetStats } from "./gameState.js";
 
 
-import { tileMap2D, tileMap } from "./mapData.js";
+import { tileMap, getFreshTileMap2D } from "./mapData.js";
 
 
 
@@ -18,8 +19,12 @@ export let entities = [];
 export let player = null;
 export let bricks = [];
 
+export let tileMap2D = getFreshTileMap2D();
 
 export function buildMap() {
+
+    // Reset the live tileMap2D
+    tileMap2D = getFreshTileMap2D();
 
     entities.length = 0;
     bricks.length = 0;
@@ -75,7 +80,16 @@ export function buildMap() {
 }
 
 
-
+// Add this function
+export function resetGame() {
+    // Reset all game state variables
+    resetStats()
+    entities.length = 0;
+    bricks.length = 0;
+    player = null;
+    document.getElementById("game").innerHTML = "";
+    // ...reset any other state you use...
+}
 
 
 

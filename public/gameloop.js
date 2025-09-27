@@ -1,18 +1,25 @@
 import { entities, player } from "./bomber.js";
 import { addScore, lives, score, playerHit } from "./gameState.js";
 import { Player, Bomb, PowerUp, Explosion, Enemy, Objective } from "./classes.js";
-import { tileMap2D } from "./mapData.js";
+import { tileMap2D } from "./bomber.js";
+import { gamePaused, animationState } from "./menu.js";
+
 let lastTime = performance.now();
 let fpsCounter = 0;
 let fps = 0;
 let lastFpsUpdate = performance.now();
 let startTime = performance.now();
+let pausedAt = null;
+let totalPausedTime = 0;
 
 let portSpawned = false; // track if we already spawned a port
 
 
 // MAIN GAMELOOP
 export function gameLoop(time) {
+
+    if (gamePaused) return; // Stop updating if paused
+
     const delta = time - lastTime;
     lastTime = time;
 
@@ -31,7 +38,7 @@ export function gameLoop(time) {
         document.getElementById("fps").textContent = `FPS: ${fps}`;
 
         // Update timer
-        const elapsed = Math.floor((time - startTime) / 1000); // in seconds
+        const elapsed = Math.floor((time - startTime - totalPausedTime) / 1000); // in seconds
         const minutes = Math.floor(elapsed / 60);
         const seconds = elapsed % 60;
         document.getElementById("timer").textContent = `Time: ${minutes}:${seconds.toString().padStart(2, '0')}`;
@@ -115,7 +122,7 @@ export function gameLoop(time) {
     }));
 
     // 4️⃣ Schedule next frame
-    requestAnimationFrame(gameLoop);
+    animationState.id = requestAnimationFrame(gameLoop);
 }
 
 function collision(a, b) {
@@ -159,3 +166,19 @@ function spawnPortRandom() {
     }
 }
 
+export function setPausedAt() {
+    pausedAt = performance.now();
+}
+
+export function addPausedDuration() {
+    if (pausedAt !== null) {
+        totalPausedTime += performance.now() - pausedAt;
+        pausedAt = null;
+    }
+}
+
+export function resetTimer() {
+    startTime = performance.now();
+    totalPausedTime = 0;
+    pausedAt = null;
+}

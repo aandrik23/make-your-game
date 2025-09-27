@@ -102,20 +102,6 @@ export class Player extends Entity {
 
     this.hasKey = false; // Port
 
-
-    window.addEventListener("keydown", (e) => {
-      if (["b", "B", "ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight", "w", "a", "s", "d"].includes(e.key)) {
-        e.preventDefault();
-      }
-
-      switch (e.key) {
-        case "ArrowUp": case "w": this.nextDir = { dx: 0, dy: -1 }; break;
-        case "ArrowDown": case "s": this.nextDir = { dx: 0, dy: 1 }; break;
-        case "ArrowLeft": case "a": this.nextDir = { dx: -1, dy: 0 }; break;
-        case "ArrowRight": case "d": this.nextDir = { dx: 1, dy: 0 }; break;
-        case "B": case "b": this.dropBomb(); break;
-      }
-    });
   }
 
 

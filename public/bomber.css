@@ -1,10 +1,15 @@
 body {
   display: flex;
-  justify-content: center; /* horizontal center */
-  align-items: center;     /* vertical center */
-  height: 100vh;           /* full viewport height */
-  margin: 0;               /* remove default body margin */
-  background: #494242;        /* optional: dark background */
+  justify-content: center;
+  /* horizontal center */
+  align-items: center;
+  /* vertical center */
+  height: 100vh;
+  /* full viewport height */
+  margin: 0;
+  /* remove default body margin */
+  background: #494242;
+  /* optional: dark background */
 }
 
 #game {
@@ -35,26 +40,93 @@ body {
 }
 
 
-.wall    { background-image: url("images/rock.png"); }
-.brick   { background-image: url("images/bricks.png"); }
-.floor   { background-color: rgb(59, 63, 66); }
+.wall {
+  background-image: url("images/rock.png");
+}
+
+.brick {
+  background-image: url("images/bricks.png");
+}
+
+.floor {
+  background-color: rgb(59, 63, 66);
+}
 
 
-.bomber  { background-image: url("images/BombermanRight.png"); }
+.bomber {
+  background-image: url("images/BombermanRight.png");
+}
 
-.ghost-blue   { background-image: url("images/blueGhost.png"); }
-.ghost-red    { background-image: url("images/enemy1.png"); }
-.ghost-pink   { background-image: url("images/enemy2.png"); }
-.ghost-orange { background-image: url("images/enemy3.png"); }
+.ghost-blue {
+  background-image: url("images/blueGhost.png");
+}
 
-.cherry  { background-image: url("images/cherry.png"); }
-.apple   { background-image: url("images/apple.png"); }
-.banana  { background-image: url("images/banana.png"); }
+.ghost-red {
+  background-image: url("images/enemy1.png");
+}
 
-.key     { background-image: url("images/key.png"); }
-.port    { background-image: url("images/port.png"); }
+.ghost-pink {
+  background-image: url("images/enemy2.png");
+}
 
-.bomb  { background-image: url("images/bomb.png");}
+.ghost-orange {
+  background-image: url("images/enemy3.png");
+}
+
+.cherry {
+  background-image: url("images/cherry.png");
+}
+
+.apple {
+  background-image: url("images/apple.png");
+}
+
+.banana {
+  background-image: url("images/banana.png");
+}
+
+.key {
+  background-image: url("images/key.png");
+}
+
+.port {
+  background-image: url("images/port.png");
+}
+
+.bomb {
+  background-image: url("images/bomb.png");
+}
 
 
-.explosion { background-image: url("images/explosion.png");}
+.explosion {
+  background-image: url("images/explosion.png");
+}
+
+
+.menu {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+}
+
+.menu-panel {
+  background: #222;
+  padding: 2em;
+  border-radius: 1em;
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+  align-items: center;
+}
+
+.menu button {
+  padding: 0.5em 2em;
+  font-size: 1.2em;
+}

@@ -31,3 +31,9 @@ export const tileMap = [
 ];
 
 export let tileMap2D = tileMap.map(row => row.split(''));
+
+
+// Utility to deep copy the map
+export function getFreshTileMap2D() {
+    return tileMap.map(row => row.slice());
+}

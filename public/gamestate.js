@@ -10,6 +10,10 @@ export function addScore(points) {
     score += points;
 }
 
+export function resetStats() {
+    score = 0;
+    lives = 3;
+}
 
 export function playerHit() {
     if (!player.invulnerable) {
