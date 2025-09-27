@@ -1,6 +1,6 @@
 import { buildMap } from "./bomber.js";
 import { gameLoop, resetTimer } from "./gameLoop.js";
-import { setPausedAt, addPausedDuration } from "./gameLoop.js";
+import { setPausedAt, addPausedDuration, resetFrameTimers } from "./gameLoop.js";
 import { resetGame } from "./bomber.js";
 
 
@@ -50,6 +50,7 @@ function hideMenu() {
 
 // Main menu buttons
 startBtn.onclick = () => {
+    resetFrameTimers();
     hideMenu();
 };
 infoBtn.onclick = () => {
@@ -64,6 +65,7 @@ quitBtn.onclick = () => {
 
 // Pause menu buttons
 continueBtn.onclick = () => {
+    resetFrameTimers();
     hideMenu();
 };
 restartBtn.onclick = () => {
@@ -72,6 +74,7 @@ restartBtn.onclick = () => {
     resetTimer();
     resetGame();
     buildMap();
+    resetFrameTimers();
     hideMenu();
 };
 mainMenuBtn.onclick = () => {

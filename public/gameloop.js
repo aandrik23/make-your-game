@@ -26,16 +26,16 @@ export function gameLoop(time) {
     // ✅ FPS calculation
     fpsCounter++;
     if (time - lastFpsUpdate >= 1000) { // every 1 second
+        // update the fps element
         fps = fpsCounter;
         fpsCounter = 0;
         lastFpsUpdate = time;
+        document.getElementById("fps").textContent = `FPS: ${fps}`;
 
         // Update lives and score
         document.getElementById("lives").textContent = `Lives: ${lives}`;
         document.getElementById("score").textContent = `Score: ${score}`;
 
-        // update the DOM element
-        document.getElementById("fps").textContent = `FPS: ${fps}`;
 
         // Update timer
         const elapsed = Math.floor((time - startTime - totalPausedTime) / 1000); // in seconds
@@ -181,4 +181,11 @@ export function resetTimer() {
     startTime = performance.now();
     totalPausedTime = 0;
     pausedAt = null;
+}
+
+export function resetFrameTimers() {
+    lastTime = performance.now();
+    lastFpsUpdate = lastTime;
+    fpsCounter = 0;
+    fps = 0;
 }
