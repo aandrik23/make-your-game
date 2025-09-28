@@ -94,3 +94,6 @@ export function resetGame() {
 
 
 
+export function updateTileMap2D(x, y, newChar) {
+    tileMap2D[y][x] = newChar;
+}

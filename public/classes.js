@@ -1,4 +1,4 @@
-import { entities, bricks, COLS, ROWS } from './bomber.js';
+import { entities, bricks, COLS, ROWS, updateTileMap2D } from './bomber.js';
 import { addScore } from './gameState.js';
 import { tileMap2D } from './mapData.js';
 
@@ -85,6 +85,8 @@ export class Player extends Entity {
     super(x, y, "bomber");
     this.tileMap = tileMap;
     this.nextDir = { dx: 0, dy: 0 };
+    this.dir = { dx: 0, dy: 0 }; // <--- add this
+
     this.bombs = [];
     this.bombRadius = 1;  // radius logic
 
@@ -125,17 +127,28 @@ export class Player extends Entity {
   chooseDirection() {
     const newX = this.x + this.nextDir.dx;
     const newY = this.y + this.nextDir.dy;
+    // Try to turn if possible
+    const canTurn = this.tileMap[newY][newX] !== "X" &&
+      this.tileMap[newY][newX] !== "B" &&
+      !entities.some(e => e instanceof Bomb && e.x === newX && e.y === newY);
 
-    // Check if target tile is blocked by wall, brick, or bomb
-    const blocked = this.tileMap[newY][newX] === "X" ||
-      this.tileMap[newY][newX] === "B" ||
-      entities.some(e => e instanceof Bomb && e.x === newX && e.y === newY);
+    if (canTurn && (this.nextDir.dx !== this.dir.dx || this.nextDir.dy !== this.dir.dy)) {
+      // Turn to new direction
+      this.dir = { ...this.nextDir };
+    }
 
-    if (!blocked) {
-      this.targetX = newX;
-      this.targetY = newY;
-      this.x = newX;
-      this.y = newY;
+    // Try to move in current direction
+    const forwardX = this.x + this.dir.dx;
+    const forwardY = this.y + this.dir.dy;
+    const canMoveForward = this.tileMap[forwardY][forwardX] !== "X" &&
+      this.tileMap[forwardY][forwardX] !== "B" &&
+      !entities.some(e => e instanceof Bomb && e.x === forwardX && e.y === forwardY);
+
+    if (canMoveForward) {
+      this.targetX = forwardX;
+      this.targetY = forwardY;
+      this.x = forwardX;
+      this.y = forwardY;
     }
   }
 
@@ -337,12 +350,7 @@ export class Objective extends Entity {
 }
 
 
-
-
-
-
-function spawnExplosions(x, y, radius, tileMap) {
-  // Center explosion
+function spawnExplosions(x, y, radius, tileMap2D) {   // rename parameter to make it clear
   entities.push(new Explosion(x, y));
 
   const dirs = [
@@ -357,40 +365,39 @@ function spawnExplosions(x, y, radius, tileMap) {
       const nx = x + dir.dx * i;
       const ny = y + dir.dy * i;
 
-      if (ny < 0 || ny >= tileMap.length || nx < 0 || nx >= tileMap[0].length) break;
+      if (ny < 0 || ny >= tileMap2D.length || nx < 0 || nx >= tileMap2D[0].length) break;
 
-      const tileChar = tileMap[ny][nx];
+      const tileChar = tileMap2D[ny][nx]; // read from 2D array now
 
-      if (tileChar === "X") break; // wall
+      if (tileChar === "X") break;
 
       entities.push(new Explosion(nx, ny));
 
-
-
-      // Destroy brick if present
       if (tileChar === "B") {
-        addScore(15)
+        addScore(15);
 
-        tileMap2D[ny][nx] = " ";        // mark as floor
+        // ✅ update 2D array, not string:
+        updateTileMap2D(nx, ny, " "); // change brick to floor
 
-        const brick = bricks.find(b => b.x === nx && b.y === ny);
-        if (brick) {
-          brick.tile.className = "tile floor"; // turn brick into floor visually
-        }
-        if (brick.hiddenItem) {
-          if (brick.hiddenItem === "key") {
-            const keyObj = new Objective(nx, ny, "key");
-            entities.push(keyObj);
-          } else if (brick.hiddenItem.type === "enemy") {
-            const enemy = new Enemy(nx, ny, brick.hiddenItem.color, tileMap2D, COLS, ROWS);
-            enemy.activateInvulnerability()
-            entities.push(enemy);
+        const brickIndex = bricks.findIndex(b => b.x === nx && b.y === ny);
+        if (brickIndex !== -1) {
+          const brick = bricks[brickIndex];
+          brick.tile.className = "tile floor";
+          bricks.splice(brickIndex, 1);
+
+          if (brick.hiddenItem) {
+            if (brick.hiddenItem === "key") {
+              entities.push(new Objective(nx, ny, "key"));
+            } else if (brick.hiddenItem.type === "enemy") {
+              const enemy = new Enemy(nx, ny, brick.hiddenItem.color, tileMap2D, COLS, ROWS);
+              enemy.activateInvulnerability();
+              entities.push(enemy);
+            }
           }
         }
-        break; // stop explosion after hitting brick
+
+        break;
       }
     }
   });
 }
-
-
