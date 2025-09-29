@@ -2,6 +2,7 @@ import { buildMap } from "./bomber.js";
 import { gameLoop, resetTimer } from "./gameLoop.js";
 import { setPausedAt, addPausedDuration, resetFrameTimers } from "./gameLoop.js";
 import { resetGame } from "./bomber.js";
+import { startMusic } from "./audio.js";
 
 
 let gamePaused = true;
@@ -50,6 +51,7 @@ function hideMenu() {
 
 // Main menu buttons
 startBtn.onclick = () => {
+    startMusic();
     resetFrameTimers();
     hideMenu();
 };
