@@ -4,6 +4,7 @@ import { Player, Bomb, PowerUp, Explosion, Enemy, Objective } from "./classes.js
 import { tileMap2D } from "./bomber.js";
 import { gamePaused, animationState } from "./menu.js";
 import { PlayPowerUpSound, PlayLevelClearedSound, stopMusic } from "./audio.js";
+import { loadYouWin } from "./videos.js";
 
 let lastTime = performance.now();
 let fpsCounter = 0;
@@ -14,7 +15,7 @@ let pausedAt = null;
 let totalPausedTime = 0;
 
 let portSpawned = false; // track if we already spawned a port
-
+let levelCompleted = false; // track if level is completed
 
 // MAIN GAMELOOP
 export function gameLoop(time) {
@@ -89,11 +90,12 @@ export function gameLoop(time) {
             }
 
             // if it’s the port
-            if (e.el.classList.contains("port") && collision(player.bounds, e.bounds)) {
+            if (!levelCompleted && e.el.classList.contains("port") && collision(player.bounds, e.bounds)) {
                 if (player.hasKey) {
+                    levelCompleted = true;
                     stopMusic();
                     PlayLevelClearedSound();
-                    alert("You escaped! Level complete!");
+                    loadYouWin();
                     // proceed to next level
                 } else {
                     // maybe show message: "Need the key first"
