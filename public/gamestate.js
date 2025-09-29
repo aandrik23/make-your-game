@@ -1,5 +1,6 @@
 import { PlayerHitSound, PlayLevelFailedSound, stopMusic } from './audio.js';
 import { player } from './bomber.js';
+import { loadGameOver } from './videos.js';
 
 
 
@@ -23,9 +24,11 @@ export function playerHit() {
         if (lives <= 0) {
             stopMusic();
             PlayLevelFailedSound();
-            alert("Game Over!");
-            window.location.reload();
-            return;
+            loadGameOver();
+            // // we should fix this to show a proper game over screen
+            // alert("Game Over!");
+            // window.location.reload();
+            // return;
         }
 
         // Reset player position
