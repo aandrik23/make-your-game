@@ -117,7 +117,7 @@ body {
 }
 
 .menu-panel {
-  background: #222;
+  background: #393636;
   padding: 2em;
   border-radius: 1em;
   display: flex;
@@ -127,6 +127,8 @@ body {
 }
 
 .menu button {
+  border-radius: 0.4em;
   padding: 0.5em 2em;
   font-size: 1.2em;
+  background: orange;
 }

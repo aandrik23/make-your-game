@@ -1,4 +1,4 @@
-import { PlayerHitSound } from './audio.js';
+import { PlayerHitSound, PlayLevelFailedSound, stopMusic } from './audio.js';
 import { player } from './bomber.js';
 
 
@@ -16,10 +16,13 @@ export function resetStats() {
 }
 
 export function playerHit() {
+
     PlayerHitSound();
     if (!player.invulnerable) {
         lives--;
         if (lives <= 0) {
+            stopMusic();
+            PlayLevelFailedSound();
             alert("Game Over!");
             window.location.reload();
             return;

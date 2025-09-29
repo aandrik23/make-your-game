@@ -6,6 +6,9 @@ const playerHitSound = new Audio('sounds/player_hit.wav');
 
 const powerUpSound = new Audio('sounds/powerUp.mp3');
 
+const levelClearedSound = new Audio('sounds/level_completed.mp3');
+
+const levelFailedSound = new Audio('sounds/level_failed.mp3');
 
 export function startMusic() {
     bgMusic.loop = true;
@@ -39,4 +42,14 @@ export function PlayPowerUpSound() {
     powerUpSound.volume = 0.5; // lower volume
     powerUpSound.currentTime = 0;
     powerUpSound.play();
+}
+
+export function PlayLevelClearedSound() {
+    levelClearedSound.currentTime = 0;
+    levelClearedSound.play();
+}
+
+export function PlayLevelFailedSound() {
+    levelFailedSound.currentTime = 0;
+    levelFailedSound.play();
 }

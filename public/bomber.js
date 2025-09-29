@@ -88,7 +88,6 @@ export function resetGame() {
     bricks.length = 0;
     player = null;
     document.getElementById("game").innerHTML = "";
-    // ...reset any other state you use...
 }
 
 

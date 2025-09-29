@@ -67,10 +67,12 @@ quitBtn.onclick = () => {
 
 // Pause menu buttons
 continueBtn.onclick = () => {
+    startMusic();
     resetFrameTimers();
     hideMenu();
 };
 restartBtn.onclick = () => {
+    startMusic();
     // 1. Cancel any running animation frame
     cancelAnimationFrame(animationState.id);
     resetTimer();

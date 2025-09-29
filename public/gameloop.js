@@ -3,7 +3,7 @@ import { addScore, lives, score, playerHit } from "./gameState.js";
 import { Player, Bomb, PowerUp, Explosion, Enemy, Objective } from "./classes.js";
 import { tileMap2D } from "./bomber.js";
 import { gamePaused, animationState } from "./menu.js";
-import { PlayPowerUpSound } from "./audio.js";
+import { PlayPowerUpSound, PlayLevelClearedSound, stopMusic } from "./audio.js";
 
 let lastTime = performance.now();
 let fpsCounter = 0;
@@ -91,6 +91,8 @@ export function gameLoop(time) {
             // if it’s the port
             if (e.el.classList.contains("port") && collision(player.bounds, e.bounds)) {
                 if (player.hasKey) {
+                    stopMusic();
+                    PlayLevelClearedSound();
                     alert("You escaped! Level complete!");
                     // proceed to next level
                 } else {
