@@ -3,6 +3,7 @@ import { addScore, lives, score, playerHit } from "./gameState.js";
 import { Player, Bomb, PowerUp, Explosion, Enemy, Objective } from "./classes.js";
 import { tileMap2D } from "./bomber.js";
 import { gamePaused, animationState } from "./menu.js";
+import { PlayPowerUpSound } from "./audio.js";
 
 let lastTime = performance.now();
 let fpsCounter = 0;
@@ -135,6 +136,7 @@ function collision(a, b) {
 
 
 function playerEat(powerUp) {
+    PlayPowerUpSound();
     addScore(10);
     player.bombRadius++;   // INCREASE radius
     powerUp.el.remove();

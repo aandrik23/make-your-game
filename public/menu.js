@@ -2,7 +2,7 @@ import { buildMap } from "./bomber.js";
 import { gameLoop, resetTimer } from "./gameLoop.js";
 import { setPausedAt, addPausedDuration, resetFrameTimers } from "./gameLoop.js";
 import { resetGame } from "./bomber.js";
-import { startMusic } from "./audio.js";
+import { startMusic, stopMusic } from "./audio.js";
 
 
 let gamePaused = true;
@@ -91,10 +91,12 @@ infoPauseBtn.onclick = () => {
 window.addEventListener("keydown", (e) => {
     if (e.code === "Space" && gameRunning) {
         if (gamePaused) {
+            startMusic();
             // Unpausing
             addPausedDuration();
             hideMenu();
         } else {
+            stopMusic();
             // Pausing
             setPausedAt();
             showPauseMenu();

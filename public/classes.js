@@ -1,6 +1,8 @@
+import { ExplosionSound } from './audio.js';
 import { entities, bricks, COLS, ROWS, updateTileMap2D } from './bomber.js';
 import { addScore } from './gameState.js';
-import { tileMap2D } from './mapData.js';
+
+
 
 export class Tile {
   constructor(x, y, cssClass) {
@@ -352,6 +354,8 @@ export class Objective extends Entity {
 
 function spawnExplosions(x, y, radius, tileMap2D) {   // rename parameter to make it clear
   entities.push(new Explosion(x, y));
+
+  ExplosionSound(1000)
 
   const dirs = [
     { dx: 1, dy: 0 },
