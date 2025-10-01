@@ -23,6 +23,9 @@ const restartBtn = document.getElementById("restartBtn");
 const mainMenuBtn = document.getElementById("mainMenuBtn");
 const infoPauseBtn = document.getElementById("infoPauseBtn");
 
+const settingsMenu = document.getElementById("settingsMenu");
+const backBtn = document.getElementById("backBtn");
+
 export function showMainMenu() {
     menu.style.display = "flex";
     mainMenu.style.display = "flex";
@@ -59,7 +62,10 @@ infoBtn.onclick = () => {
     alert("Game Info: Use arrow keys to move. Space to pause.");
 };
 settingsBtn.onclick = () => {
-    alert("Settings not implemented.");
+    settingsMenu.style.display = "flex";
+};
+backBtn.onclick = () => {
+  settingsMenu.style.display = "none";   // hide settings menu    // show main menu again
 };
 quitBtn.onclick = () => {
     window.close();
