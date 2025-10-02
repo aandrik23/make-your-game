@@ -21,6 +21,7 @@ const quitBtn = document.getElementById("quitBtn");
 const continueBtn = document.getElementById("continueBtn");
 const restartBtn = document.getElementById("restartBtn");
 const mainMenuBtn = document.getElementById("mainMenuBtn");
+const settingsPauseBtn = document.getElementById("settingsPauseBtn");
 const infoPauseBtn = document.getElementById("infoPauseBtn");
 
 const settingsMenu = document.getElementById("settingsMenu");
@@ -63,9 +64,14 @@ infoBtn.onclick = () => {
 };
 settingsBtn.onclick = () => {
     settingsMenu.style.display = "flex";
+    // backBtn.focus();  // focus back button for accessibility.   ***
+};
+settingsPauseBtn.onclick = () => {
+    settingsMenu.style.display = "flex";
+    // backBtn.focus();  // focus back button for accessibility.   ***
 };
 backBtn.onclick = () => {
-  settingsMenu.style.display = "none";   // hide settings menu    // show main menu again
+  settingsMenu.style.display = "none";   // hide settings menu and show main menu again   ***
 };
 quitBtn.onclick = () => {
     window.close();
@@ -73,6 +79,7 @@ quitBtn.onclick = () => {
 
 // Pause menu buttons
 continueBtn.onclick = () => {
+    startMusic();  // resume music
     resetFrameTimers();
     hideMenu();
 };
@@ -83,6 +90,7 @@ restartBtn.onclick = () => {
     resetGame();
     buildMap();
     resetFrameTimers();
+    startMusic(); // restart music
     hideMenu();
 };
 mainMenuBtn.onclick = () => {
@@ -95,7 +103,15 @@ infoPauseBtn.onclick = () => {
 
 // pause logic:
 window.addEventListener("keydown", (e) => {
+    if (e.code === "Space") e.preventDefault();     // ***
+
     if (e.code === "Space" && gameRunning) {
+        if (e.repeat) return; // ignore if key is held down.   ***
+
+        if (settingsMenu.style.display === "flex") {
+            settingsMenu.style.display = "none";
+            return; 
+        }
         if (gamePaused) {
             startMusic();
             // Unpausing
@@ -109,6 +125,13 @@ window.addEventListener("keydown", (e) => {
             cancelAnimationFrame(animationState.id);
         }
     }
+});
+
+// block dafault click on focused space button.   ***
+window.addEventListener("keyup", (e) => {
+  if (e.code === "Space") {
+    e.preventDefault();
+  }
 });
 
 

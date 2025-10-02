@@ -1,6 +1,7 @@
 import { gameLoop } from "./gameLoop.js";
 import { buildMap } from "./bomber.js";
 import { showMainMenu } from "./menu.js";
+import { initAudioControls } from "./audio.js";
 
 
 import { player } from './bomber.js';
@@ -20,6 +21,8 @@ window.addEventListener("keydown", (e) => {
         case "B": case "b": player.dropBomb(); break;
     }
 });
+
+initAudioControls(); // initialize audio controls
 
 // Show main menu on load
 showMainMenu();
