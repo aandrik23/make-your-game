@@ -64,7 +64,6 @@ infoBtn.onclick = () => {
 };
 settingsBtn.onclick = () => {
     settingsMenu.style.display = "flex";
-    // backBtn.focus();  // focus back button for accessibility.   ***
 };
 settingsPauseBtn.onclick = () => {
     settingsMenu.style.display = "flex";
