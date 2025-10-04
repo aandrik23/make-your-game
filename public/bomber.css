@@ -262,6 +262,46 @@ body {
   width: 150px;
 }
 
+#infoMenu {
+  display: none;
+  /* hidden until you open it */
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  /* dark overlay */
+  z-index: 2000;
+  /* make sure it’s above your game */
+  justify-content: center;
+  align-items: center;
+}
+
+/* Popup box */
+
+#infoMenu .modal-content {
+  background: #555;
+  color: #fff;
+  padding: 20px;
+  border-radius: 10px;
+  text-align: left;
+  max-width: 600px;
+  line-height: 1.5;
+  overflow-y: auto;
+  max-height: 80vh;
+}
+
+#infoMenu h3 {
+  margin-top: 15px;
+  color: #ffd36b;
+}
+
+#infoMenu ul {
+  margin-left: 20px;
+  list-style-type: disc;
+}
+
 #backBtn {
   margin-top: 10px;
   padding: 10px 20px;

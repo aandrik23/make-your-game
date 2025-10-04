@@ -31,6 +31,10 @@ const infoPauseBtn = document.getElementById("infoPauseBtn");
 const settingsMenu = document.getElementById("settingsMenu");
 const backBtn = document.getElementById("backBtn");
 
+//INFO
+const infoMenu = document.getElementById("infoMenu");
+const backInfoBtn = document.getElementById("backInfoBtn");
+
 export function showMainMenu() {
     menu.style.display = "flex";
     mainMenu.style.display = "flex";
@@ -66,7 +70,17 @@ startBtn.onclick = () => {
 
 
 infoBtn.onclick = () => {
-    alert("Game Info: Use arrow keys to move. Space to pause.");
+    infoMenu.style.display = "flex";
+    backInfoBtn.focus();
+};
+
+infoPauseBtn.onclick = () => {
+    infoMenu.style.display = "flex";
+    backInfoBtn.focus();  // focus back button for accessibility.   ***
+};
+
+backInfoBtn.onclick = () => {
+    infoMenu.style.display = "none";   // hide info menu    // show main menu again
 };
 
 
@@ -107,9 +121,7 @@ mainMenuBtn.onclick = () => {
     showMainMenu();
     gameRunning = false;
 };
-infoPauseBtn.onclick = () => {
-    alert("Game Info: Use arrow keys to move. Space to pause.");
-};
+
 
 // pause logic:
 window.addEventListener("keydown", (e) => {
