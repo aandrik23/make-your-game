@@ -17,6 +17,12 @@ let totalPausedTime = 0;
 let portSpawned = false; // track if we already spawned a port
 let levelCompleted = false; // track if level is completed
 
+
+export function ResetPort() {
+    levelCompleted = false;
+    portSpawned = false
+}
+
 // MAIN GAMELOOP
 export function gameLoop(time) {
 

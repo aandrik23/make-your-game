@@ -14,10 +14,10 @@ window.addEventListener("keydown", (e) => {
     if (!player) return; // No player yet
 
     switch (e.key) {
-        case "ArrowUp": case "w": case "W": player.nextDir = { dx: 0, dy: -1 }; break;
-        case "ArrowDown": case "s": case "S": player.nextDir = { dx: 0, dy: 1 }; break;
-        case "ArrowLeft": case "a": case "A": player.nextDir = { dx: -1, dy: 0 }; break;
-        case "ArrowRight": case "d": case "D": player.nextDir = { dx: 1, dy: 0 }; break;
+        case "ArrowUp": case "w": case "W": player.nextDir = { dx: 0, dy: -1 }; player.el.style.backgroundImage = 'url("./images/BombermanUp.png")'; break;
+        case "ArrowDown": case "s": case "S": player.nextDir = { dx: 0, dy: 1 }; player.el.style.backgroundImage = 'url("./images/BombermanDown.png")'; break;
+        case "ArrowLeft": case "a": case "A": player.nextDir = { dx: -1, dy: 0 }; player.el.style.backgroundImage = 'url("./images/BombermanLeft.png")'; break;
+        case "ArrowRight": case "d": case "D": player.nextDir = { dx: 1, dy: 0 }; player.el.style.backgroundImage = 'url("./images/BombermanRight.png")'; break;
         case "B": case "b": player.dropBomb(); break;
     }
 });

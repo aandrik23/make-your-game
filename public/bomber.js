@@ -1,4 +1,5 @@
 import { Player, Enemy, Tile, PowerUp } from "./classes.js";
+import { ResetPort } from "./gameLoop.js";
 import { resetStats } from "./gameState.js";
 
 
@@ -83,6 +84,7 @@ export function buildMap() {
 // Add this function
 export function resetGame() {
     // Reset all game state variables
+    ResetPort()
     resetStats()
     entities.length = 0;
     bricks.length = 0;
