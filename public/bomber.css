@@ -28,16 +28,17 @@ body {
 }
 
 #hud {
-  position: absolute;
-  top: 10px;
-  left: 10px;
+  position: fixed;
+  top: 10%;
   color: white;
   font-family: sans-serif;
   font-size: 16px;
   z-index: 1000;
   display: flex;
   gap: 20px;
+  align-items: center;
 }
+
 
 
 .wall {
@@ -117,7 +118,7 @@ body {
 }
 
 .menu-panel {
-  background: #393636;
+  background: #706b6b;
   padding: 2em;
   border-radius: 1em;
   display: flex;
@@ -131,4 +132,149 @@ body {
   padding: 0.5em 2em;
   font-size: 1.2em;
   background: orange;
+}
+
+
+.menu button {
+  width: 200px;
+  transition: transform 0.2s ease;
+  background-color: #F2A53E;
+  border-radius: 0.5em;
+  padding: 0.5em 2em;
+  font-size: 1.2em;
+}
+
+.menu button:hover {
+  transform: scale(1.05);
+  cursor: pointer;
+  background-color: #365892;
+}
+
+#settingsMenu {
+  display: none;
+  /* hidden until you open it */
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  /* dark overlay */
+  z-index: 2000;
+  /* make sure it’s above your game */
+  justify-content: center;
+  align-items: center;
+}
+
+/* Popup box */
+#settingsMenu .modal-content {
+  background: #666;
+  padding: 20px;
+  border-radius: 10px;
+  text-align: center;
+  min-width: 300px;
+}
+
+.difficulty {
+  margin: 15px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.difficulty-title {
+  color: rgb(0, 0, 0);
+  font-size: 22px;
+  font-weight: bold;
+  margin-right: 10px;
+}
+
+.difficulty-buttons {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+
+.difficultyBtn {
+  width: 150px;
+  height: 40px;
+  padding: 0;
+  border: none;
+  border-radius: 6px;
+  background-color: #F2A53E;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.difficultyBtn:hover {
+  transform: scale(1.05);
+  background-color: #365892;
+}
+
+.audio-settings {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+  margin: 15px 0;
+}
+
+#audio-settings button,
+#audio-settings input {
+  cursor: pointer;
+}
+
+#muteBtn {
+  width: 80px;
+  height: 40px;
+  border: none;
+  border-radius: 6px;
+  background: #ffa94d;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: background 0.2s ease;
+}
+
+#muteBtn:hover {
+  background: #ff922b;
+}
+
+#muteBtn.muted {
+  background: #ad5e0a;
+}
+
+#muteBtn img {
+  width: 20px;
+  /* shrink image */
+  height: 20px;
+  /* emoji-sized */
+  object-fit: contain;
+  pointer-events: none;
+  /* ensures clicks work anywhere */
+}
+
+#volumeSlider {
+  width: 150px;
+}
+
+#backBtn {
+  margin-top: 10px;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  background-color: #F2A53E;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+#backBtn:hover {
+  transform: scale(1.05);
+  background-color: #365892;
 }

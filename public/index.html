@@ -24,6 +24,7 @@
             <button id="continueBtn">Continue</button>
             <button id="restartBtn">Restart</button>
             <button id="mainMenuBtn">Main Menu</button>
+            <button id="settingsPauseBtn">Settings</button>
             <button id="infoPauseBtn">Info</button>
         </div>
     </div>
@@ -33,6 +34,27 @@
         <span id="score">Score: 0</span>
         <span id="timer">Time: 0:00</span>
     </div>
+    <div id="settingsMenu" class="modal">
+        <div class="modal-content">
+            <h2>Settings</h2>
+            <div class="difficulty">
+                <p class="difficulty-title">Select Difficulty</p>
+                <div class="difficulty-buttons">
+                    <button class="difficultyBtn" data-level="easy">Easy</button>
+                    <button class="difficultyBtn" data-level="medium">Medium</button>
+                    <button class="difficultyBtn" data-level="hard">Hard</button>
+                </div>
+            </div>
+            <div class="audio-settings">
+                <button id="muteBtn">
+                    <img id="muteIcon" src="./images/sound.png" alt="Mute/Unmute">
+                </button>
+                <input type="range" id="volumeSlider" min="0" max="100" value="50">
+            </div>
+            <button id="backBtn">Back</button>
+        </div>
+    </div>
+
 
 
     <div id="game"></div>

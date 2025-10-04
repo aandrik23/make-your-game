@@ -13,15 +13,23 @@ const menu = document.getElementById("menu");
 const mainMenu = document.getElementById("mainMenu");
 const pauseMenu = document.getElementById("pauseMenu");
 
+
+//MAIN MENU
 const startBtn = document.getElementById("startBtn");
 const infoBtn = document.getElementById("infoBtn");
 const settingsBtn = document.getElementById("settingsBtn");
 const quitBtn = document.getElementById("quitBtn");
 
+//PAUSE MENU
 const continueBtn = document.getElementById("continueBtn");
 const restartBtn = document.getElementById("restartBtn");
-const mainMenuBtn = document.getElementById("mainMenuBtn");
+const mainMenuBtn = document.getElementById("mainMenuBtn")
+const settingsPauseBtn = document.getElementById("settingsPauseBtn");;
 const infoPauseBtn = document.getElementById("infoPauseBtn");
+
+//SETTINGS  
+const settingsMenu = document.getElementById("settingsMenu");
+const backBtn = document.getElementById("backBtn");
 
 export function showMainMenu() {
     menu.style.display = "flex";
@@ -55,12 +63,26 @@ startBtn.onclick = () => {
     resetFrameTimers();
     hideMenu();
 };
+
+
 infoBtn.onclick = () => {
     alert("Game Info: Use arrow keys to move. Space to pause.");
 };
+
+
 settingsBtn.onclick = () => {
-    alert("Settings not implemented.");
+    settingsMenu.style.display = "flex";
+    backBtn.focus();  // focus back button for accessibility.   ***
 };
+settingsPauseBtn.onclick = () => {
+    settingsMenu.style.display = "flex";
+    backBtn.focus();  // focus back button for accessibility.   ***
+};
+
+backBtn.onclick = () => {
+    settingsMenu.style.display = "none";   // hide settings menu    // show main menu again
+};
+
 quitBtn.onclick = () => {
     window.close();
 };
@@ -91,6 +113,16 @@ infoPauseBtn.onclick = () => {
 
 // pause logic:
 window.addEventListener("keydown", (e) => {
+
+    if (e.code === "Space") e.preventDefault();
+
+    if (e.repeat) return; // ignore if key is held down.   ***
+    if (settingsMenu.style.display === "flex") {
+        settingsMenu.style.display = "none";
+        return;
+    }
+
+
     if (e.code === "Space" && gameRunning) {
         if (gamePaused) {
             startMusic();
@@ -106,6 +138,15 @@ window.addEventListener("keydown", (e) => {
         }
     }
 });
+
+
+// block dafault click on focused space button.   ***
+window.addEventListener("keyup", (e) => {
+    if (e.code === "Space") {
+        e.preventDefault();
+    }
+});
+
 
 
 
