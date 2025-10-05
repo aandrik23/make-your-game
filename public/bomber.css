@@ -262,6 +262,25 @@ body {
   width: 150px;
 }
 
+#backBtn {
+  margin-top: 10px;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  background-color: #F2A53E;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+#backBtn:hover {
+  transform: scale(1.05);
+  background-color: #365892;
+}
+
+
+/* Info Menu */
 #infoMenu {
   display: none;
   /* hidden until you open it */
@@ -281,20 +300,51 @@ body {
 /* Popup box */
 
 #infoMenu .modal-content {
-  background: #555;
-  color: #fff;
-  padding: 20px;
+  background: #666;
+  color: #0a2759;
+  padding: 25px 40px;
   border-radius: 10px;
   text-align: left;
   max-width: 600px;
   line-height: 1.5;
   overflow-y: auto;
   max-height: 80vh;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-size: 16px;
 }
 
-#infoMenu h3 {
+#infoMenu .info-text h3 {
+  position: relative;
+  display: inline-block;
+  margin-left: 0;
+  padding-left: 0;
   margin-top: 15px;
-  color: #ffd36b;
+  color: #90afe6;
+  margin-bottom: 12px;
+}
+
+#infoMenu .info-text h3::after {
+  content: "";
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background-color: #000000;
+  border-radius: 2px;
+}
+
+#infoMenu .info-text p,
+#infoMenu .info-text ul {
+  margin-left: 0;
+  padding-left: 0;
+  margin-top: 15px;
+  color: #ffffff;
+}
+
+#infoMenu .info-text ul {
+  list-style-position: inside;
+  margin-bottom: 1em;
 }
 
 #infoMenu ul {
@@ -302,7 +352,15 @@ body {
   list-style-type: disc;
 }
 
-#backBtn {
+#infoMenu .info-text strong {
+  color: #F2A53E;
+}
+
+#infoMenu .info-text ul li::marker {
+  color: #000000;
+}
+
+#backInfoBtn {
   margin-top: 10px;
   padding: 10px 20px;
   border: none;
@@ -314,7 +372,7 @@ body {
   transition: transform 0.2s ease;
 }
 
-#backBtn:hover {
+#backInfoBtn:hover {
   transform: scale(1.05);
   background-color: #365892;
 }
