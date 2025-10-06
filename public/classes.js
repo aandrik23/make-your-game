@@ -122,6 +122,13 @@ export class Player extends Entity {
   }
 
   dropBomb() {
+    // limit 5 active bombs
+    this.bombs = this.bombs.filter(b => entities.includes(b)); // clean up exploded bombs
+
+    if (this.bombs.length >= 5) {
+      console.log("Max bombs reached, wait for one to explode.");
+      return;
+    }
     const bomb = new Bomb(this.x, this.y, this.bombRadius, this.tileMap);
     entities.push(bomb);
     this.bombs.push(bomb);
@@ -315,6 +322,12 @@ export class Bomb extends Entity {
     const index = entities.indexOf(this);
     if (index > -1) {
       entities.splice(index, 1);
+    }
+    if (window.player && window.player.bombs) {
+      const bombIndex = window.player.bombs.indexOf(this);
+      if (bombIndex > -1) {
+        window.player.bombs.splice(bombIndex, 1);
+      }
     }
   }
 }
