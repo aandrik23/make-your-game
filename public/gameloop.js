@@ -2,7 +2,7 @@ import { entities, player } from "./bomber.js";
 import { addScore, lives, score, playerHit } from "./gameState.js";
 import { Player, Bomb, PowerUp, Explosion, Enemy, Objective } from "./classes.js";
 import { tileMap2D } from "./bomber.js";
-import { gamePaused, animationState } from "./menu.js";
+import { gamePaused, animationState, showMainMenu } from "./menu.js";
 import { PlayPowerUpSound, PlayLevelClearedSound, stopMusic } from "./audio.js";
 import { loadYouWin } from "./videos.js";
 
@@ -103,9 +103,8 @@ export function gameLoop(time) {
                     PlayLevelClearedSound();
                     loadYouWin();
                     // proceed to next level
-                } else {
-                    // maybe show message: "Need the key first"
                 }
+                showMainMenu();
             }
         }
 

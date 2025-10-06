@@ -1,6 +1,7 @@
 import { Player, Enemy, Tile, PowerUp } from "./classes.js";
 import { ResetPort } from "./gameLoop.js";
 import { resetStats } from "./gameState.js";
+import { hideMenu, Restart } from "./menu.js";
 
 
 import { tileMap, getFreshTileMap2D } from "./mapData.js";
@@ -42,7 +43,7 @@ export function buildMap() {
             else if (char === "B") {
                 const brickTile = new Tile(x, y, "brick");
 
-                if (Math.random() < 0.1) {
+                if (Math.random() < randomEnemy) {
                     // choose random enemy type
                     const enemyTypes = ["blue", "orange", "pink", "red"];
                     const type = enemyTypes[Math.floor(Math.random() * enemyTypes.length)];
@@ -98,3 +99,31 @@ export function resetGame() {
 export function updateTileMap2D(x, y, newChar) {
     tileMap2D[y][x] = newChar;
 }
+
+
+// Define your variable (will change based on click)
+let difficulty = "easy";
+let randomEnemy = 0.1; // default value
+
+// Get all buttons
+const buttons = document.querySelectorAll(".difficultyBtn");
+
+// Loop through and add event listeners
+buttons.forEach(button => {
+    button.addEventListener("click", () => {
+        difficulty = button.dataset.level; // "easy", "medium", or "hard"
+        console.log("Difficulty set to:", difficulty);
+
+        // Example: you could also set parameters right here
+        if (difficulty === "easy") {
+            randomEnemy = 0.1;
+        } else if (difficulty === "medium") {
+            randomEnemy = 0.2;
+        } else if (difficulty === "hard") {
+            randomEnemy = 0.3;
+        }
+        Restart()
+        settingsMenu.style.display = "none";   // hide settings menu 
+
+    });
+});

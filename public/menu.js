@@ -28,7 +28,7 @@ const settingsPauseBtn = document.getElementById("settingsPauseBtn");;
 const infoPauseBtn = document.getElementById("infoPauseBtn");
 
 //SETTINGS  
-const settingsMenu = document.getElementById("settingsMenu");
+export const settingsMenu = document.getElementById("settingsMenu");
 const backBtn = document.getElementById("backBtn");
 
 //INFO
@@ -48,7 +48,7 @@ function showPauseMenu() {
     pauseMenu.style.display = "flex";
     gamePaused = true;
 }
-function hideMenu() {
+export function hideMenu() {
     menu.style.display = "none";
     gamePaused = false;
     if (!gameRunning) {
@@ -63,9 +63,7 @@ function hideMenu() {
 
 // Main menu buttons
 startBtn.onclick = () => {
-    startMusic();
-    resetFrameTimers();
-    hideMenu();
+    Restart();
 };
 
 
@@ -108,14 +106,7 @@ continueBtn.onclick = () => {
     hideMenu();
 };
 restartBtn.onclick = () => {
-    startMusic();
-    // 1. Cancel any running animation frame
-    cancelAnimationFrame(animationState.id);
-    resetTimer();
-    resetGame();
-    buildMap();
-    resetFrameTimers();
-    hideMenu();
+    Restart();
 };
 mainMenuBtn.onclick = () => {
     showMainMenu();
@@ -163,3 +154,14 @@ window.addEventListener("keyup", (e) => {
 
 
 export { gamePaused, gameRunning };
+
+
+export function Restart() {
+    startMusic();
+    cancelAnimationFrame(animationState.id);
+    resetTimer();
+    resetGame();
+    buildMap();
+    resetFrameTimers();
+    hideMenu();
+}
