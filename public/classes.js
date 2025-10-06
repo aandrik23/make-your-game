@@ -1,5 +1,6 @@
 import { ExplosionSound } from './audio.js';
 import { entities, bricks, COLS, ROWS, updateTileMap2D } from './bomber.js';
+import { addPausedDuration } from './gameLoop.js';
 import { addScore } from './gameState.js';
 
 
@@ -295,6 +296,7 @@ export class Bomb extends Entity {
   update(delta) {
     this.time += delta
     if (this.time >= this.fuse) {
+      addPausedDuration();
       this.explode()
     }
   }
@@ -352,7 +354,7 @@ export class Objective extends Entity {
 }
 
 
-function spawnExplosions(x, y, radius, tileMap2D) {   // rename parameter to make it clear
+function spawnExplosions(x, y, radius, tileMap2D) {
   entities.push(new Explosion(x, y));
 
   ExplosionSound(1000)

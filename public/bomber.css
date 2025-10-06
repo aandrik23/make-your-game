@@ -28,8 +28,8 @@ body {
 }
 
 #hud {
-  position: fixed;
-  top: 10%;
+  position: absolute;
+  top: 5%;
   color: white;
   font-family: sans-serif;
   font-size: 16px;
