@@ -28,7 +28,7 @@ export function loadYouWin() {
     const rect = gameContainer.getBoundingClientRect();
 
     const video = document.createElement('video');
-    video.src = './video/check.mp4';
+    video.src = './video/BIM.mp4';
     video.width = rect.width;   // match game container width
     video.height = rect.height; // match game container height
     video.controls = false;

@@ -262,6 +262,201 @@ body {
   width: 150px;
 }
 
+#backBtn {
+  margin-top: 10px;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  background-color: #F2A53E;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+#backBtn:hover {
+  transform: scale(1.05);
+  background-color: #365892;
+}
+
+
+.menu {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.7);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 100;
+}
+
+.menu-panel {
+  background: #706b6b;
+  padding: 2em;
+  border-radius: 1em;
+  display: flex;
+  flex-direction: column;
+  gap: 1em;
+  align-items: center;
+}
+
+.menu button {
+  border-radius: 0.4em;
+  padding: 0.5em 2em;
+  font-size: 1.2em;
+  background: orange;
+}
+
+
+.menu button {
+  width: 200px;
+  transition: transform 0.2s ease;
+  background-color: #F2A53E;
+  border-radius: 0.5em;
+  padding: 0.5em 2em;
+  font-size: 1.2em;
+}
+
+.menu button:hover {
+  transform: scale(1.05);
+  cursor: pointer;
+  background-color: #365892;
+}
+
+#settingsMenu {
+  display: none;
+  /* hidden until you open it */
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.5);
+  /* dark overlay */
+  z-index: 2000;
+  /* make sure it’s above your game */
+  justify-content: center;
+  align-items: center;
+}
+
+/* Popup box */
+#settingsMenu .modal-content {
+  background: #666;
+  padding: 20px;
+  border-radius: 10px;
+  text-align: center;
+  min-width: 300px;
+}
+
+.difficulty {
+  margin: 15px 0;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+}
+
+.difficulty-title {
+  color: rgb(0, 0, 0);
+  font-size: 22px;
+  font-weight: bold;
+  margin-right: 10px;
+}
+
+.difficulty-buttons {
+  display: flex;
+  gap: 10px;
+  justify-content: center;
+}
+
+.difficultyBtn {
+  width: 150px;
+  height: 40px;
+  padding: 0;
+  border: none;
+  border-radius: 6px;
+  background-color: #F2A53E;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+.difficultyBtn:hover {
+  transform: scale(1.05);
+  background-color: #365892;
+}
+
+.audio-settings {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 15px;
+  margin: 15px 0;
+}
+
+#audio-settings button,
+#audio-settings input {
+  cursor: pointer;
+}
+
+#muteBtn {
+  width: 80px;
+  height: 40px;
+  border: none;
+  border-radius: 6px;
+  background: #ffa94d;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  transition: background 0.2s ease;
+}
+
+#muteBtn:hover {
+  background: #ff922b;
+}
+
+#muteBtn.muted {
+  background: #ad5e0a;
+}
+
+#muteBtn img {
+  width: 20px;
+  /* shrink image */
+  height: 20px;
+  /* emoji-sized */
+  object-fit: contain;
+  pointer-events: none;
+  /* ensures clicks work anywhere */
+}
+
+#volumeSlider {
+  width: 150px;
+}
+
+#backBtn {
+  margin-top: 10px;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 6px;
+  background-color: #F2A53E;
+  color: white;
+  font-size: 16px;
+  cursor: pointer;
+  transition: transform 0.2s ease;
+}
+
+#backBtn:hover {
+  transform: scale(1.05);
+  background-color: #365892;
+}
+
+
+/* Info Menu */
 #infoMenu {
   display: none;
   /* hidden until you open it */
@@ -281,20 +476,51 @@ body {
 /* Popup box */
 
 #infoMenu .modal-content {
-  background: #555;
-  color: #fff;
-  padding: 20px;
+  background: #666;
+  color: #0a2759;
+  padding: 25px 40px;
   border-radius: 10px;
   text-align: left;
   max-width: 600px;
   line-height: 1.5;
   overflow-y: auto;
   max-height: 80vh;
+  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-size: 16px;
 }
 
-#infoMenu h3 {
+#infoMenu .info-text h3 {
+  position: relative;
+  display: inline-block;
+  margin-left: 0;
+  padding-left: 0;
   margin-top: 15px;
-  color: #ffd36b;
+  color: #90afe6;
+  margin-bottom: 12px;
+}
+
+#infoMenu .info-text h3::after {
+  content: "";
+  position: absolute;
+  bottom: -4px;
+  left: 0;
+  width: 100%;
+  height: 3px;
+  background-color: #000000;
+  border-radius: 2px;
+}
+
+#infoMenu .info-text p,
+#infoMenu .info-text ul {
+  margin-left: 0;
+  padding-left: 0;
+  margin-top: 15px;
+  color: #ffffff;
+}
+
+#infoMenu .info-text ul {
+  list-style-position: inside;
+  margin-bottom: 1em;
 }
 
 #infoMenu ul {
@@ -302,7 +528,15 @@ body {
   list-style-type: disc;
 }
 
-#backBtn {
+#infoMenu .info-text strong {
+  color: #F2A53E;
+}
+
+#infoMenu .info-text ul li::marker {
+  color: #000000;
+}
+
+#backInfoBtn {
   margin-top: 10px;
   padding: 10px 20px;
   border: none;
@@ -314,7 +548,7 @@ body {
   transition: transform 0.2s ease;
 }
 
-#backBtn:hover {
+#backInfoBtn:hover {
   transform: scale(1.05);
   background-color: #365892;
 }
