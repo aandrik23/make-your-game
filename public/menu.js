@@ -159,9 +159,9 @@ export { gamePaused, gameRunning };
 export function Restart() {
     startMusic();
     cancelAnimationFrame(animationState.id);
-    resetTimer();
+
     resetGame();
     buildMap();
-    resetFrameTimers();
+
     hideMenu();
 }

@@ -1,5 +1,5 @@
 import { Player, Enemy, Tile, PowerUp } from "./classes.js";
-import { ResetPort } from "./gameLoop.js";
+import { resetFrameTimers, ResetPort, resetTimer } from "./gameLoop.js";
 import { resetStats } from "./gameState.js";
 import { hideMenu, Restart } from "./menu.js";
 
@@ -85,6 +85,8 @@ export function buildMap() {
 // Add this function
 export function resetGame() {
     // Reset all game state variables
+    resetTimer()
+    resetFrameTimers()
     ResetPort()
     resetStats()
     entities.length = 0;
@@ -114,7 +116,7 @@ buttons.forEach(button => {
         difficulty = button.dataset.level; // "easy", "medium", or "hard"
         console.log("Difficulty set to:", difficulty);
 
-        // Example: you could also set parameters right here
+        // Assign values
         if (difficulty === "easy") {
             randomEnemy = 0.1;
         } else if (difficulty === "medium") {
