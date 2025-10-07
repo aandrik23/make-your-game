@@ -122,11 +122,19 @@ export class Player extends Entity {
   }
 
   dropBomb() {
-    // limit 5 active bombs
+
     this.bombs = this.bombs.filter(b => entities.includes(b)); // clean up exploded bombs
 
+    // Limit active bombs
     if (this.bombs.length >= 5) {
       console.log("Max bombs reached, wait for one to explode.");
+      return;
+    }
+
+    // Prevent stacking bombs on the same tile
+    const existingBomb = entities.some(e => e instanceof Bomb && e.x === this.x && e.y === this.y);
+    if (existingBomb) {
+      console.log("There's already a bomb here!");
       return;
     }
     const bomb = new Bomb(this.x, this.y, this.bombRadius, this.tileMap);
@@ -395,7 +403,7 @@ function spawnExplosions(x, y, radius, tileMap2D) {
       if (tileChar === "B") {
         addScore(15);
 
-        // ✅ update 2D array, not string:
+        // ✅ update 2D array
         updateTileMap2D(nx, ny, " "); // change brick to floor
 
         const brickIndex = bricks.findIndex(b => b.x === nx && b.y === ny);
