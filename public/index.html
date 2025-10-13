@@ -1,0 +1,102 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="bomber.css">
+
+</head>
+
+<body>
+
+    <div id="menu" class="menu">
+        <div id="mainMenu" class="menu-panel">
+            <h2>Game Menu</h2>
+            <button id="startBtn">Start</button>
+            <button id="infoBtn">Info</button>
+            <button id="settingsBtn">Settings</button>
+            <button id="quitBtn">Quit</button>
+        </div>
+        <div id="pauseMenu" class="menu-panel" style="display:none;">
+            <h2>Paused</h2>
+            <button id="continueBtn">Continue</button>
+            <button id="restartBtn">Restart</button>
+            <button id="mainMenuBtn">Main Menu</button>
+            <button id="settingsPauseBtn">Settings</button>
+            <button id="infoPauseBtn">Info</button>
+        </div>
+    </div>
+    <div id="hud">
+        <span id="fps">FPS: 0</span>
+        <span id="lives">Lives: 3</span>
+        <span id="score">Score: 0</span>
+        <span id="timer">Time: 0:00</span>
+    </div>
+    <div id="settingsMenu" class="modal">
+        <div class="modal-content">
+            <img src="./images/cog_silver.png">
+            <div class="difficulty">
+                <p class="difficulty-title">Select Difficulty</p>
+                <div class="difficulty-buttons">
+                    <button class="difficultyBtn" data-level="easy">Easy</button>
+                    <button class="difficultyBtn" data-level="medium">Medium</button>
+                    <button class="difficultyBtn" data-level="hard">Hard</button>
+                </div>
+            </div>
+            <p class="difficulty-title">Adjust volume</p>
+            <div class="audio-settings">
+                <button id="muteBtn">
+                    <img id="muteIcon" src="./images/sound.png" alt="Mute/Unmute">
+                </button>
+                <input type="range" id="volumeSlider" min="0" max="100" value="50">
+            </div>
+            <button id="backBtn">Back</button>
+        </div>
+    </div>
+
+    <div id="infoMenu" class="modal">
+        <div class="modal-content">
+            <h2>Game Info</h2>
+            <div class="info-text">
+                <p><strong>Welcome to the Bomber Game!</strong></p>
+                <h3>How to Play</h3>
+                <ul>
+                    <li><strong>Movement:</strong> Use WASD or the Arrow Keys to move your character around the map.
+                    </li>
+                    <li><strong>Bombs:</strong> Place bombs to destroy brick tiles and clear paths.</li>
+                    <li><strong>Power-Ups:</strong> Eating a power-up increases your bomb’s explosion radius by +1.</li>
+                    <li><strong>Objective:</strong> Search for the hidden Key inside one of the brick tiles. Once you
+                        collect the Key, a Port will spawn on the map. Carry the Key to the Port to complete the level.
+                    </li>
+                </ul>
+
+                <h3>Watch Out!</h3>
+                <p>Enemies may be hiding behind the bricks. Destroying a tile could reveal a dangerous foe, so be
+                    careful where you bomb! Touching an enemy or being caught in an explosion will cause you to lose.
+                </p>
+
+                <h3>Tips</h3>
+                <ul>
+                    <li>Plan your bombs carefully—explosions spread in a cross shape.</li>
+                    <li>Use power-ups wisely to cover more ground, but remember, larger blasts can also put you at risk.
+                    </li>
+                    <li>Always keep an escape route in mind when placing bombs.</li>
+                </ul>
+
+                <p><em>Good luck, and happy bombing!</em></p>
+            </div>
+            <button id="backInfoBtn">Back</button>
+        </div>
+    </div>
+
+
+
+    <div id="game"></div>
+    <script type="module" src="./main.js"></script>
+
+
+</body>
+
+</html>
